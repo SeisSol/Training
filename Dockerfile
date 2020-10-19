@@ -108,6 +108,8 @@ RUN apt-get update \
     openmpi-bin \
     libopenblas-base \
     zlib1g \
+    vim \
+    nano \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home
