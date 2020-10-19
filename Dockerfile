@@ -115,3 +115,8 @@ RUN apt-get update \
 WORKDIR /home
 COPY --from=0 /home/tools tools
 ENV PATH=/home/tools/bin:$PATH
+COPY entrypoint.sh /entrypoint.sh
+
+VOLUME ["/shared"]
+WORKDIR /shared
+ENTRYPOINT ["/entrypoint.sh"]
