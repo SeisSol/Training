@@ -5,7 +5,11 @@ case "$1" in
     gmsh|pumgen|rconv)
         exec "$@"
     ;;
-    seissol|SeisSol)
+    seissol)
+        set -- SeisSol_Release_dhsw_4_elastic "${@:2}"
+        exec "$@"
+    ;;
+    seissol_plasticity)
         set -- SeisSol_Release_dhsw_4_elastic_plasticity "${@:2}"
         exec "$@"
     ;;

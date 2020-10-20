@@ -46,12 +46,12 @@ RUN wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/parmetis-4.0.3.tar.g
     && cp build/Linux-x86_64/libmetis/libmetis.a /home/tools/lib \
     && cp metis/include/metis.h /home/tools/include
 
-#RUN git clone https://github.com/TUM-I5/ASAGI.git \
-    #&& cd ASAGI \
-    #&& git submodule update --init \
-    #&& mkdir build && cd build \
-    #&& CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DNONUMA=on -DSHARED_LIB=off -DSTATIC_LIB=on \
-    #&& make -j4 && make install
+RUN git clone https://github.com/TUM-I5/ASAGI.git \
+    && cd ASAGI \
+    && git submodule update --init \
+    && mkdir build && cd build \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DNONUMA=on -DSHARED_LIB=off -DSTATIC_LIB=on -DCMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/bin/../include \
+    && make -j4 && make install
 
 RUN git clone https://github.com/hfp/libxsmm.git \
     && cd libxsmm \
@@ -69,7 +69,9 @@ RUN git clone https://github.com/SeisSol/SeisSol.git \
     && git submodule update --init \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=off -DPLASTICITY=on -DNETCDF=off -DORDER=4 \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DPLASTICITY=off -DNETCDF=on -DORDER=4 \
+    && make -j4 \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DPLASTICITY=on -DNETCDF=on -DORDER=4 \
     && make -j4 \
     && cp SeisSol_* /home/tools/bin
 
