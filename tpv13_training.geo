@@ -35,36 +35,31 @@
  * ARISING IN ANY WAY OUT OF THE  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  
-
-Creates the mesh for tpv13, 60 degree dipping fault with a square nucleation patch
-Obtain the mesh:
-gmsh tpv13_example.geo -3 -optimize
-Convert the mesh:
-pumgen -s msh2 tpv13_example.msh
  */
 
 //resolution, off- and on-fault and nucleation patch
-lc = 25e3;
-lc_fault = 750;
-lc_nucl = 250;
+lc = 25e3;        // maximum mesh size
+lc_fault = 750;   // fault discretization 
+lc_nucl = 250;    // nucleation patch discretization
 
-Fault_length = 30e3;
+Fault_length = 30e3;  
 Fault_width = 15e3;
 Fault_dip = 60*Pi/180.;
 
-//Square nucleation patch in X,Z local coordinates
+// Square nucleation patch in X,Z local coordinates
 X_nucl = 0e3;
 Z_nucl = -12e3;
 Width_nucl = 3e3;
 
+// volume size: 3-4 times of the fault’s dimension
 Xmax = 45e3;
 Xmin = -Xmax;
 Ymin = 36e3;
 Ymax =  -Ymin;
 Zmin = -42e3;
 
-
 //Create the Volume
+//points -> lines -> surface
 Point(1) = {Xmin, Ymin, 0, lc};
 Point(2) = {Xmin, Ymax, 0, lc};
 Point(3) = {Xmax, Ymax, 0, lc};
@@ -103,24 +98,23 @@ Plane Surface(200) = {204};
 Line Loop(105) = {100,101,102,103,200,201,202,203};
 Plane Surface(100) = {105};
 
-//There is a bug in "Attractor", we need to define a Ruled surface in FaceList
+//We need to define a Ruled surface in FaceList
 Line Loop(106) = {100,101,102,103};
-Ruled Surface(101) = {106};
-Ruled Surface(201) = {204};
+Surface(101) = {106};  // Ruled surface is deprecated in latest Gmsh
+Surface(201) = {204};
 
 Surface{100,200} In Volume{1};
 
-
 //1.2 Managing coarsening away from the fault
-// Attractor field returns the distance to the curve (actually, the
-// distance to 100 equidistant points on the curve)
+// we can use two fields:
+// "Distance": returns distance to surface 101
 Field[1] = Distance;
 Field[1].FacesList = {101};
 
-// Matheval field returns "distance squared + lc/20"
+// secondly we can then create a `MathEval' field with a function that depends on the
+// return value of the `Distance' field 1, i.e., depending on the distance to
+//surface 101 (here Matheval field returns  "distance squared + lc/20")
 Field[2] = MathEval;
-//Field[2].F = Sprintf("0.02*F1 + 0.00001*F1^2 + %g", lc_fault);
-//Field[2].F = Sprintf("0.02*F1 +(F1/2e3)^2 + %g", lc_fault);
 Field[2].F = Sprintf("0.05*F1 +(F1/2.5e3)^2 + %g", lc_fault);
 
 //3.4.5 Managing coarsening around the nucleation Patch
@@ -146,10 +140,8 @@ Field[6].LcMax = lc;
 Field[6].DistMin = 2*lc_fault;
 Field[6].DistMax = 2*lc_fault+0.001;
 
-
 Field[7] = Min;
 Field[7].FieldsList = {2,5,6};
-
 
 Background Field = 7;
 
@@ -157,10 +149,13 @@ Background Field = 7;
 //Define SeisSol specific boundary conditions
 //free surface
 Physical Surface(101) = {1};
-//dynamic rupture
+//fault boundary
 Physical Surface(103) = {100,200};
-//absorbing
+//absorbing boundaries
 Physical Surface(105) = {14,18,22,26,27};
 
 Physical Volume(1) = {1};
 Mesh.MshFileVersion = 2.2;
+
+// refer to Gmsh tutorial  <https://gmsh.info/doc/texinfo/gmsh.html#t10> 
+// or SeisSol documentation: <https://seissol.readthedocs.io/en/latest/gmsh.html>
