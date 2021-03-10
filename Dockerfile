@@ -55,6 +55,7 @@ RUN git clone https://github.com/TUM-I5/ASAGI.git \
 
 RUN git clone https://github.com/hfp/libxsmm.git \
     && cd libxsmm \
+    && git checkout 1.16.1 \
     && make -j4 generator \
     && cp bin/libxsmm_gemm_generator /home/tools/bin
 
