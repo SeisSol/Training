@@ -1,0 +1,104 @@
+&equations
+!yaml file defining spatial dependence of material properties
+MaterialFileName = 'tpv12_13_material.yaml'
+!enable off-fault plasticity (ignored in Plasticity=0)
+Plasticity = 1
+Tv = 0.03
+/
+
+&IniCondition
+/
+
+&Boundaries
+BC_fs = 1                                      ! enable free surface boundaries
+BC_dr = 1                                      ! enable fault boundaries
+BC_of = 1                                      ! enable absorbing boundaries
+/
+
+&DynamicRupture
+! linear slip-weakening friction
+FL = 2                                        ! Friction law  
+!yaml file defining spatial dependence of fault properties
+ModelFileName = 'tpv12_13_fault.yaml'
+
+!characteristic time of the forced nucleation
+t_0 = 0.5
+
+!reference vector for defining strike and dip direction
+XRef = 0.0
+YRef = -1.0
+ZRef = 0.0
+refPointMethod = 1
+
+RF_output_on = 0                                ! Rupture front ascii output
+magnitude_output_on = 0                         ! Moment magnitude output
+energy_rate_output_on = 0                       ! Moment rate output
+OutputPointType = 4
+/
+
+!see: https://seissol.readthedocs.io/en/latest/fault-output.html
+!parameterize paraview file output
+&Elementwise
+printIntervalCriterion = 2                     ! 1=iteration, 2=time
+printtimeinterval_sec = 1.0                    ! Time interval at which output will be written
+OutputMask = 1 1 1 0 1 1 1 1 1 1 1             ! turn on and off fault outputs
+refinement_strategy = 2
+refinement = 1
+/
+
+!parameterize ascii fault file outputs
+&Pickpoint
+/
+
+&SourceType
+/
+
+&SpongeLayer
+/
+            
+&MeshNml
+MeshFile = 'tpv13_training.puml.h5'
+meshgenerator = 'PUML'                         ! Name of meshgenerator (Gambit3D-fast, Netcdf or PUML)
+/
+
+&Discretization
+CFL = 0.5                                      ! CFL number (<=1.0)
+FixTimeStep = 5                                ! Manually chosen minimum time
+ClusteredLTS = 2                               ! Enable local time-stepping
+/
+
+&Output
+FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
+OutputFile = 'output/tpv13'
+Format = 10                                    ! Format (10=no output, 6=hdf5 output)
+!             |stress     |vel  |plastic strain output (if any)
+iOutputMask = 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+TimeInterval =  5.                           ! Index of printed info at time
+refinement = 1
+
+! Free surface output
+SurfaceOutput = 1
+SurfaceOutputRefinement = 1
+SurfaceOutputInterval = 5.0
+
+printIntervalCriterion = 2          ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
+
+pickdt = 0.005                       ! Pickpoint Sampling
+pickDtType = 1                       ! Pickpoint Type
+nRecordPoints = 0                    ! number of Record points which are read from file
+RFileName = 'tpv12_13_receivers.dat'      ! Record Points in extra file
+
+xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
+! and free-surface output. The HDF5 backend is only supported when SeisSol is compiled with
+! HDF5 support.
+/
+
+&AbortCriteria
+EndTime = 8.0
+/
+
+&Analysis
+/
+
+&Debugging
+/

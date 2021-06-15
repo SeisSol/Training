@@ -12,6 +12,15 @@ RUN apt-get update \
     cmake \
     libopenblas-dev \
     libopenmpi-dev \
+    libocct-data-exchange-7.3 \
+    libocct-data-exchange-dev \
+    libocct-modeling-algorithms-7.3 \
+    libocct-modeling-algorithms-dev \
+    libocct-modeling-data-7.3 \
+    libocct-modeling-data-dev \
+    libocct-foundation-7.3 \
+    libocct-foundation-dev \
+    libtbb2 \
     zlib1g-dev \
     pkg-config \
     git \
@@ -72,8 +81,6 @@ RUN git clone https://github.com/SeisSol/SeisSol.git \
     && export PATH=$PATH:/home/tools/bin \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DPLASTICITY=off -DNETCDF=on -DORDER=4 \
     && make -j4 \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DPLASTICITY=on -DNETCDF=on -DORDER=4 \
-    && make -j4 \
     && cp SeisSol_* /home/tools/bin
 
 RUN cd SeisSol/preprocessing/science/rconv \
@@ -96,10 +103,10 @@ RUN git clone https://github.com/SeisSol/PUMGen.git \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
     && make -j4 && make install
 
-RUN wget https://gmsh.info/src/gmsh-4.6.0-source.tgz \
-    && tar -xvf gmsh-4.6.0-source.tgz \
-    && cd gmsh-4.6.0-source && mkdir build && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_BUILD_TYPE=Release \
+RUN wget https://gmsh.info/src/gmsh-4.8.4-source.tgz \
+    && tar -xvf gmsh-4.8.4-source.tgz \
+    && cd gmsh-4.8.4-source && mkdir build && cd build \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_BUILD_TYPE=Release -DENABLE_OCC=ON \
     && make -j4 && make install
 
 FROM debian:stable-slim
@@ -110,16 +117,33 @@ RUN apt-get update \
     libopenmpi3 \
     openmpi-bin \
     libopenblas-base \
+    libocct-data-exchange-7.3 \
+    libocct-modeling-algorithms-7.3 \
+    libocct-modeling-data-7.3 \
+    libocct-foundation-7.3 \
+    libtbb2 \
+    python3 \
+    python3-pip \
+    python3-setuptools \
     zlib1g \
-    vim \
-    nano \
+    libxrender1 \
+    xvfb \
+    tini \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home
 COPY --from=0 /home/tools tools
+COPY requirements.txt .
+RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt
+
 ENV PATH=/home/tools/bin:$PATH
+ENV OMP_PLACES="cores"
+ENV OMP_PROC_BIND="spread"
 COPY entrypoint.sh /entrypoint.sh
+
+WORKDIR /home/training
+COPY tpv13/ tpv13/
 
 VOLUME ["/shared"]
 WORKDIR /shared
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["tini", "-g", "/entrypoint.sh", "--"]
