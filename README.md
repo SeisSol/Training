@@ -8,7 +8,7 @@ The Docker container contains an interactive learning environment (Jupyter) whic
 
 Please install [Docker](https://docs.docker.com/engine/install/) and run
 ```bash
-docker pull uphoffc/seissol-traning
+docker pull uphoffc/seissol-training
 ```
 
 ## Training
