@@ -13,7 +13,7 @@ then
     Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
     sleep 3
     set +x
-    jupyter lab --allow-root --port=8888 --no-browser --ip=0.0.0.0
+    jupyter lab --allow-root --port=53155 --no-browser --ip=0.0.0.0
     exit
 fi
 

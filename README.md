@@ -15,13 +15,13 @@ docker pull uphoffc/seissol-training
 
 After installation, run
 ```bash
-docker run -p 8888:8888 uphoffc/seissol-training
+docker run -p 53155:53155 uphoffc/seissol-training
 ```
 or run the [start.sh](start.sh) script.
 
 After some time you should see
 ```bash
-http://127.0.0.1:8888/lab?token=some5cryptic8hash123
+http://127.0.0.1:53155/lab?token=some5cryptic8hash123
 ```
 Click on that link or enter the link in the address bar of your favourite web browser.
 Then use the navigation bar to open the exercises (e.g. [tpv13/tpv13.ipynb](tpv13/tpv13.ipynb)).

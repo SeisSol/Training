@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -p 8888:8888 uphoffc/seissol-training
+docker run -p 53155:53155 uphoffc/seissol-training
