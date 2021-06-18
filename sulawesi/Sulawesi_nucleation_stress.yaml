@@ -1,0 +1,41 @@
+!EvalModel
+parameters: [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz,ShapeNucleation]
+model: !Switch
+  [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]: !EvalModel
+    parameters: [effectiveConfiningStress]
+    model: !FunctionMap
+      map:
+        effectiveConfiningStress: |
+          return -(2670.0-1000.0)*9.8*10000.;
+    components: !OptimalStress
+      constants:
+        mu_d:      0.1
+        mu_s:      0.6
+        strike:  -15.0
+        dip:      90.0
+        rake:      0.0
+        cohesion:  0.0
+        s2ratio:   0.7
+        R:         4.5
+  [ShapeNucleation]: !FunctionMap
+    map:
+      #original setup:
+      #r_crit = 1500.0;
+      ShapeNucleation: |
+        xc =  17700.0;
+        yc = 55580.0;
+        zc = -10000.0;
+        r_crit = 1500.0;
+        r = sqrt(pow(x-xc, 2.0) + pow(y-yc, 2.0) + pow(z-zc, 2.0));
+        if (r < r_crit) {
+          return exp(pow(r,2.0)/(pow(r,2.0)-pow(r_crit,2.0)));
+        }
+        return 0.0;
+components: !FunctionMap
+  map:
+    nuc_xx:     return ShapeNucleation*b_xx;
+    nuc_yy:     return ShapeNucleation*b_yy;
+    nuc_zz:     return ShapeNucleation*b_zz;
+    nuc_xy:     return ShapeNucleation*b_xy;
+    nuc_yz:     return ShapeNucleation*b_yz;
+    nuc_xz:     return ShapeNucleation*b_xz;

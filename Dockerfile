@@ -10,6 +10,8 @@ RUN apt-get update \
     gfortran \
     make \
     cmake \
+    libnuma-dev \
+    libnuma1 \
     libopenblas-dev \
     libopenmpi-dev \
     libocct-data-exchange-7.3 \
@@ -59,7 +61,7 @@ RUN git clone https://github.com/TUM-I5/ASAGI.git \
     && cd ASAGI \
     && git submodule update --init \
     && mkdir build && cd build \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DNONUMA=on -DSHARED_LIB=off -DSTATIC_LIB=on -DCMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/bin/../include \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DCMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/bin/../include \
     && make -j4 && make install
 
 RUN git clone https://github.com/hfp/libxsmm.git \
@@ -116,6 +118,7 @@ RUN apt-get update \
     libgomp1 \
     libopenmpi3 \
     openmpi-bin \
+    libnuma1 \
     libopenblas-base \
     libocct-data-exchange-7.3 \
     libocct-modeling-algorithms-7.3 \
@@ -143,6 +146,7 @@ COPY entrypoint.sh /entrypoint.sh
 
 WORKDIR /home/training
 COPY tpv13/ tpv13/
+COPY sulawesi/ sulawesi/
 
 VOLUME ["/shared"]
 WORKDIR /shared

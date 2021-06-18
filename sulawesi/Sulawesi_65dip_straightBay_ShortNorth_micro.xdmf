@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+ <Domain>
+  <Grid Name="puml mesh" GridType="Uniform">
+   <Topology TopologyType="Tetrahedron" NumberOfElements="214690">
+    <DataItem NumberType="Int" Precision="8" Format="HDF" Dimensions="214690 4">Sulawesi_65dip_straightBay_ShortNorth_micro:/connect</DataItem>
+   </Topology>
+   <Geometry name="geo" GeometryType="XYZ" NumberOfElements="47841">
+    <DataItem NumberType="Float" Precision="8" Format="HDF" Dimensions="47841 3">Sulawesi_65dip_straightBay_ShortNorth_micro:/geometry</DataItem>
+   </Geometry>
+   <Attribute Name="group" Center="Cell">
+    <DataItem  NumberType="Int" Precision="4" Format="HDF" Dimensions="214690">Sulawesi_65dip_straightBay_ShortNorth_micro:/group</DataItem>
+   </Attribute>
+   <Attribute Name="boundary" Center="Cell">
+    <DataItem NumberType="Int" Precision="4" Format="HDF" Dimensions="214690">Sulawesi_65dip_straightBay_ShortNorth_micro:/boundary</DataItem>
+   </Attribute>
+  </Grid>
+ </Domain>
+</Xdmf>
