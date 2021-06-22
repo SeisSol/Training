@@ -81,7 +81,7 @@ RUN git clone https://github.com/SeisSol/SeisSol.git \
     && git submodule update --init \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DPLASTICITY=off -DNETCDF=on -DORDER=4 \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DCMAKE_Fortran_FLAGS="-ffast-math -funsafe-math-optimizations" \
     && make -j4 \
     && cp SeisSol_* /home/tools/bin
 
