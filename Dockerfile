@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM debian:bullseye-slim
 
 RUN apt-get update \
     && apt-get install -y \
@@ -14,13 +14,13 @@ RUN apt-get update \
     libnuma1 \
     libopenblas-dev \
     libopenmpi-dev \
-    libocct-data-exchange-7.3 \
+    libocct-data-exchange-7.5 \
     libocct-data-exchange-dev \
-    libocct-modeling-algorithms-7.3 \
+    libocct-modeling-algorithms-7.5 \
     libocct-modeling-algorithms-dev \
-    libocct-modeling-data-7.3 \
+    libocct-modeling-data-7.5 \
     libocct-modeling-data-dev \
-    libocct-foundation-7.3 \
+    libocct-foundation-7.5 \
     libocct-foundation-dev \
     libtbb2 \
     zlib1g-dev \
@@ -111,7 +111,7 @@ RUN wget https://gmsh.info/src/gmsh-4.8.4-source.tgz \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_BUILD_TYPE=Release -DENABLE_OCC=ON \
     && make -j4 && make install
 
-FROM debian:stable-slim
+FROM debian:bullseye-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -120,10 +120,10 @@ RUN apt-get update \
     openmpi-bin \
     libnuma1 \
     libopenblas-base \
-    libocct-data-exchange-7.3 \
-    libocct-modeling-algorithms-7.3 \
-    libocct-modeling-data-7.3 \
-    libocct-foundation-7.3 \
+    libocct-data-exchange-7.5 \
+    libocct-modeling-algorithms-7.5 \
+    libocct-modeling-data-7.5 \
+    libocct-foundation-7.5 \
     libtbb2 \
     python3 \
     python3-pip \
