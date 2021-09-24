@@ -1,12 +1,12 @@
 # Training
 
-Welcome to the SeisSol training.
+Welcome to the SeisSol training. Please clone this repository with git (using the command line) or download it directly from the browser.
 This repository contains a Dockerfile to build a Docker container.
-The Docker container contains an interactive learning environment (Jupyter) which includes meshing tools, SeisSol, and visualiation.
+The Docker container contains an interactive learning environment (Jupyter) which includes meshing tools, SeisSol, and visualiation tools.
 
 ## Installation
 
-Please install [Docker](https://docs.docker.com/engine/install/) and run
+Please install [Docker](https://docs.docker.com/engine/install/), launch the Docker Desktop and then run
 ```bash
 docker pull uphoffc/seissol-training
 ```
@@ -24,7 +24,8 @@ After some time you should see
 http://127.0.0.1:53155/lab?token=some5cryptic8hash123
 ```
 Click on that link or enter the link in the address bar of your favourite web browser.
-Then use the navigation bar to open the exercises (e.g. [tpv13/tpv13.ipynb](tpv13/tpv13.ipynb)).
+
+Then use the navigation bar to open the exercises (e.g., [tpv13/tpv13.ipynb](tpv13/tpv13.ipynb)).
 
 ## Tools
 
@@ -36,10 +37,10 @@ docker run -v $(pwd):/shared/ -u $(id -u):$(id -g) uphoffc/seissol-training <som
 As this command is rather long, we provide the wrapper script [tool.sh](tool.sh).
 
 The following tools are currently included:
-- PUMGen
-- GMSH (cli only)
-- rconv
-- SeisSol O4
+- PUMGen (mesh generation for SeisSol, https://github.com/SeisSol/PUMGen, see also SeisSol's documentation https://seissol.readthedocs.io/en/latest/meshing-with-pumgen.html)
+- GMSH (open source 3D finite element mesh generator, client only, https://gmsh.info)
+- rconv (tool to describe point and finite source models in SeisSol's NetCDF Rupture Format, https://seissol.readthedocs.io/en/latest/standard-rupture-format.html#how-to-use-rconv)
+- SeisSol O4 (pre-compiled SeisSol with 4th order space-time accuracy, https://seissol.readthedocs.io)
 
 I.e.
 ```
