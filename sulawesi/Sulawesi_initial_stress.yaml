@@ -25,7 +25,7 @@ model: !Switch
     model: !FunctionMap
       map:
         effectiveConfiningStress: |
-          return 2670.0*0.21*9.8*min(-1500.0,z);
+          return 2670.0*0.15*9.8*min(-1500.0,z);
     components: !OptimalStress
       constants:
         mu_d:      0.1

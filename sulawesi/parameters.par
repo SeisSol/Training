@@ -41,8 +41,9 @@ ZRef = -1.0
 refPointMethod = 1
 
 RF_output_on = 0                               ! Rupture front ascii output
-magnitude_output_on =0                         ! Moment magnitude output
+magnitude_output_on =1                         ! Moment magnitude output
 energy_rate_output_on =1                       ! Moment rate output
+energy_rate_printtimeinterval = 30             ! print moment rate every n dt
 OutputPointType = 5                            ! Type (0: no output, 3: ascii file, 4: paraview file, 5: 3+4)
 /
 
@@ -86,8 +87,8 @@ ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3
 FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/Sulawesi'
 Format = 10                                    ! Format (10= no output, 6=hdf5 output)
-!             |stress     |vel  |plastic strain output (if any)
-iOutputMask = 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1
+!             |stress     |vel
+iOutputMask = 0 0 0 0 0 0 1 1 1
 printIntervalCriterion = 2                     ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
 TimeInterval = 5.                              ! Index of printed info at time
 refinement = 2
