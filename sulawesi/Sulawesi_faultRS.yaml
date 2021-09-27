@@ -28,5 +28,5 @@
          1500.0:  [1.0]
          -4000.0: [0.1]
          -10e10:   [0.1]
-[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stress.yaml
-[nuc_xx,nuc_yy,nuc_zz,nuc_xy, nuc_yz,nuc_xz]: !Include Sulawesi_nucleation_stress.yaml
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressRS.yaml
+[nuc_xx,nuc_yy,nuc_zz,nuc_xy, nuc_yz,nuc_xz]: !Include Sulawesi_nucleation_stressRS.yaml
