@@ -1,6 +1,6 @@
 &equations
 !yaml file defining spatial dependance of material properties
-MaterialFileName = 'Sulawesi_material3d.yaml'
+MaterialFileName = 'Sulawesi_material3dRS.yaml'
 !off-fault plasticity parameter (ignored in Plasticity=0)
 Plasticity=1
 Tv=0.05
@@ -22,7 +22,7 @@ BC_of = 1                                      ! enable absorbing boundaries
 FL = 103                                       ! Friction law  
 !0: none, 16:LSW, 103: RS with strong velocity weakening
 !yaml file defining spatial dependance of fault properties
-ModelFileName = 'Sulawesi_fault.yaml'
+ModelFileName = 'Sulawesi_faultRS.yaml'
 
 
 !non spatially dependent fault parameters
