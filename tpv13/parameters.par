@@ -31,7 +31,7 @@ ZRef = 0.0
 refPointMethod = 1
 
 RF_output_on = 0                                ! Rupture front ascii output
-magnitude_output_on = 0                         ! Moment magnitude output
+magnitude_output_on = 1                         ! Moment magnitude output
 energy_rate_output_on = 0                       ! Moment rate output
 OutputPointType = 4
 /
@@ -88,7 +88,7 @@ pickDtType = 1                       ! Pickpoint Type
 nRecordPoints = 0                    ! number of Record points which are read from file
 RFileName = 'tpv12_13_receivers.dat'      ! Record Points in extra file
 
-xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
+! xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
 ! and free-surface output. The HDF5 backend is only supported when SeisSol is compiled with
 ! HDF5 support.
 /
