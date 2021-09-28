@@ -1,0 +1,22 @@
+!Switch
+[mu_s, mu_d, d_c]: !ConstantMap
+      map:
+        mu_s:        0.60
+        mu_d:        0.10
+        d_c:         0.10
+[cohesion, forced_rupture_time]: !FunctionMap
+  map:
+    cohesion: |
+        return -400000.-400*max(z+4000.,0);
+    forced_rupture_time: |
+      xc =  17700.0;
+      yc = 55580.0;
+      zc = -10000.0;
+      r = sqrt(pow(x-xc, 2.0) + pow(y-yc, 2.0) + pow(z-zc, 2.0));
+      r_crit = 4000.0;
+      Vs = 3464.0;
+      if (r <= r_crit) {
+        return r/(0.7*Vs)+(0.081.0*r_crit/(0.7.0*Vs))*(1.0/(1.0-pow(r/r_crit, 2.0))-1.0);
+      }
+      return 1000000000.0;
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressLSW.yaml

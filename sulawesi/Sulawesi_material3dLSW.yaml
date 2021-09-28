@@ -49,4 +49,4 @@
         -3000.0:  [18e6]
         -6000.0:  [5e7]
         -10e10:   [5e7]
-[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stress.yaml
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressLSW.yaml

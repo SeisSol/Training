@@ -1,0 +1,52 @@
+!Switch
+[rho, mu, lambda]:  !IdentityMap
+  #use if defined Awaliah et al.
+  #else if defined Fichtner et al.
+  #else a constant velocity
+  components:
+    - !ASAGI
+      file: 3dvel_Sulawesi_BMKG.nc
+      parameters: [rho, mu, lambda]
+      var: data
+    - !ASAGI
+      file: 3dvel_Sulawesi.nc
+      parameters: [rho, mu, lambda]
+      var: data
+    - !ConstantMap
+        map:
+         rho: 3330.
+         mu: 65942325000.
+         lambda: 81235350000.
+#friction for off-fault plasticity
+[bulkFriction]: !ConstantMap
+  map:
+    bulkFriction: 0.6
+#cohesion for off-fault plasticity
+[plastCo]: !IdentityMap
+  components:
+    #turn off plasticity in a sphere around the hypocenter
+    - !SphericalDomainFilter
+      radius: 2.0e3
+      centre:
+        x:  17700.0
+        y: 55580.0
+        z: -10000.0
+      components: !ConstantMap
+        map:
+          plastCo: 1.0e20
+    #depth dependent cohesion
+    - !LayeredModel
+      map: !AffineMap
+        matrix:
+          z0: [0.0, 0.0, 1.0]
+        translation:
+          z0: 0
+      interpolation: linear
+      parameters: [plastCo]
+      nodes:
+        10e10:    [4e6]
+        -500.0:  [4e6]
+        -3000.0:  [18e6]
+        -6000.0:  [5e7]
+        -10e10:   [5e7]
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressRS.yaml
