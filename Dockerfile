@@ -61,7 +61,7 @@ RUN git clone https://github.com/TUM-I5/ASAGI.git \
     && cd ASAGI \
     && git submodule update --init \
     && mkdir build && cd build \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DCMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES=/usr/bin/../include \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DNONUMA=on \
     && make -j4 && make install
 
 RUN git clone https://github.com/hfp/libxsmm.git \
