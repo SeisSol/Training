@@ -1,0 +1,71 @@
+&equations
+!yaml file defining spatial dependance of material properties
+MaterialFileName = 'northridge_material.yaml'
+/
+
+&IniCondition
+/
+
+&Boundaries
+BC_fs = 1                                      ! enable free surface boundaries
+BC_dr = 0                                      ! enable fault boundaries
+BC_of = 1                                      ! enable absorbing boundaries
+/
+
+&SourceType
+Type = 42   ! 42: finite source in netcdf format
+!FileName = './northridge.nrf' ! input file.
+FileName = './northridge_resampled.nrf' ! input file.
+/
+
+
+&SpongeLayer
+/
+            
+&MeshNml
+MeshFile = 'mesh_northridge.puml.h5'
+meshgenerator = 'PUML'                         ! Name of meshgenerator (Gambit3D-fast, Netcdf or PUML)
+/
+
+&Discretization
+CFL = 0.5                                      ! CFL number (<=1.0)
+FixTimeStep = 5                                ! Manualy chosen minimum time
+ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3,5,... Local time stepping (advised value 2)
+!ClusteredLTS defines the multi-rate for the time steps of the clusters 2 for Local time stepping
+/
+
+&Output
+FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
+OutputFile = 'output/test'
+Format = 10                                     ! Format (10= no output, 6=hdf5 output)
+!             |stress     |vel  |plastic strain output (if any)
+iOutputMask = 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+TimeInterval =  5.                           ! Index of printed info at time
+refinement = 1
+
+! Free surface output
+SurfaceOutput = 1
+SurfaceOutputRefinement = 1
+SurfaceOutputInterval = 1.0
+
+printIntervalCriterion = 2          ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
+
+pickdt = 0.005                       ! Pickpoint Sampling
+pickDtType = 1                       ! Pickpoint Type
+nRecordPoints = 6                    ! number of Record points which are read from file
+RFileName = 'offreceivers.dat'       ! Record Points in extra file
+
+!xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
+! and free-surface output. The HDF5 backend is only supported when SeisSol is compiled with
+! HDF5 support.
+/
+
+&AbortCriteria
+EndTime = 10.0
+/
+
+&Analysis
+/
+
+&Debugging
+/
