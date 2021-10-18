@@ -1,6 +1,8 @@
 &equations
 !yaml file defining spatial dependance of material properties
 MaterialFileName = 'northridge_material.yaml'
+FreqCentral=0.3
+FreqRatio=100
 /
 
 &IniCondition
