@@ -3,3 +3,5 @@ vtk==9.0.3
 pyvista==0.31.1
 jupyterlab==3.0.16
 ipywidgets==7.6.3
+scipy==1.7.1
+pyproj==3.2.1

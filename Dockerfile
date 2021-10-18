@@ -110,7 +110,7 @@ RUN git clone https://github.com/SeisSol/PUMGen.git \
 RUN wget https://gmsh.info/src/gmsh-4.8.4-source.tgz \
     && tar -xvf gmsh-4.8.4-source.tgz \
     && cd gmsh-4.8.4-source && mkdir build && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_BUILD_TYPE=Release -DENABLE_OCC=ON \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_BUILD_TYPE=Release -DENABLE_OCC=ON -DENABLE_BUILD_LIB=ON -DENABLE_BUILD_SHARED=ON \
     && make -j4 && make install
 
 FROM debian:bullseye-slim
@@ -144,6 +144,7 @@ RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
 ENV OMP_PROC_BIND="spread"
+ENV PYTHONPATH="${PYTHONPATH}:/home/tools/lib"
 COPY entrypoint.sh /entrypoint.sh
 
 WORKDIR /home/training
