@@ -149,6 +149,7 @@ COPY entrypoint.sh /entrypoint.sh
 WORKDIR /home/training
 COPY tpv13/ tpv13/
 COPY sulawesi/ sulawesi/
+COPY northridge/ northridge/
 
 VOLUME ["/shared"]
 WORKDIR /shared
