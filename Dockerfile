@@ -83,6 +83,8 @@ RUN git clone https://github.com/SeisSol/SeisSol.git \
     && export PATH=$PATH:/home/tools/bin \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DCMAKE_Fortran_FLAGS="-ffast-math -funsafe-math-optimizations" \
     && make -j4 \
+    && cmake .. -DEQUATIONS=viscoelastic2 -DNUMBER_OF_MECHANISMS=3 \
+    && make -j4 \
     && cp SeisSol_* /home/tools/bin
 
 RUN cd SeisSol/preprocessing/science/rconv \

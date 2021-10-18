@@ -25,6 +25,10 @@ case "$1" in
         set -- SeisSol_Release_dhsw_4_elastic "${@:2}"
         exec "$@"
     ;;
+    seissol_viscoelastic)
+        set -- SeisSol_Release_dhsw_4_viscoelastic2 "${@:2}"
+        exec "$@"
+    ;;
     *)
         echo "Unknown command: $1"
     ;;
