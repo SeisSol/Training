@@ -63,7 +63,6 @@ meshgenerator = 'PUML'                         ! Name of meshgenerator (Gambit3D
 
 &Discretization
 CFL = 0.5                                      ! CFL number (<=1.0)
-FixTimeStep = 5                                ! Manually chosen minimum time
 ClusteredLTS = 2                               ! Enable local time-stepping
 /
 
@@ -71,8 +70,8 @@ ClusteredLTS = 2                               ! Enable local time-stepping
 FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/tpv13'
 Format = 10                                    ! Format (10=no output, 6=hdf5 output)
-!             |stress     |vel  |plastic strain output (if any)
-iOutputMask = 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+!             |stress     |vel  
+iOutputMask = 1 1 1 1 1 1 1 1 1 
 TimeInterval =  5.                           ! Index of printed info at time
 refinement = 1
 

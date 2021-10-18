@@ -5,7 +5,7 @@ MaterialFileName = 'Sulawesi_material3dRS.yaml'
 Plasticity=1
 Tv=0.05
 !Attenuation parameters (ignored if not compiled with attenuation)
-FreqCentral=2.5
+FreqCentral=0.3
 FreqRatio=100
 /
 
@@ -78,7 +78,6 @@ meshgenerator = 'PUML'                         ! Name of meshgenerator (Gambit3D
 
 &Discretization
 CFL = 0.5                                      ! CFL number (<=1.0)
-FixTimeStep = 5                                ! Manualy chosen minimum time
 ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3,5,... Local time stepping (advised value 2)
 !ClusteredLTS defines the multi-rate for the time steps of the clusters 2 for Local time stepping
 /
