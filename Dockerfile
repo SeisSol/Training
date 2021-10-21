@@ -52,6 +52,7 @@ RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
 RUN wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/parmetis/parmetis-4.0.3.tar.gz \
     && tar -xvf parmetis-4.0.3.tar.gz \
     && cd parmetis-4.0.3 \
+    && sed -i 's/IDXTYPEWIDTH 32/IDXTYPEWIDTH 64/g' ./metis/include/metis.h \
     && CC=mpicc CXX=mpicxx make config prefix=/home/tools \
     && make -j4 && make install \
     && cp build/Linux-x86_64/libmetis/libmetis.a /home/tools/lib \
