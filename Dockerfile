@@ -97,6 +97,7 @@ RUN cd SeisSol/preprocessing/science/rconv \
 
 RUN git clone https://github.com/SCOREC/core.git \
     && cd core \
+    && git submodule update --init \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release -DSCOREC_CXX_FLAGS="-Wno-error=array-bounds" \
     && make -j4 && make install
