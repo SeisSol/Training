@@ -8,14 +8,14 @@ The Docker container contains an interactive learning environment (Jupyter) whic
 
 Please install [Docker](https://docs.docker.com/engine/install/), launch the Docker Desktop and then run
 ```bash
-docker pull uphoffc/seissol-training
+docker pull alicegabriel/seissol-training
 ```
 
 ## Training
 
 After installation, run
 ```bash
-docker run -p 53155:53155 uphoffc/seissol-training
+docker run -p 53155:53155 alicegabriel/seissol-training
 ```
 or run the [start.sh](start.sh) script.
 
@@ -32,7 +32,7 @@ Then use the navigation bar to open the exercises (e.g., [tpv13/tpv13.ipynb](tpv
 You can also use the tools in the Docker container for creating input files or running SeisSol on your local computer.
 To this end, you need to mount your local drive within the Docker container with the following command:
 ```bash
-docker run -v $(pwd):/shared/ -u $(id -u):$(id -g) uphoffc/seissol-training <some command>
+docker run -v $(pwd):/shared/ -u $(id -u):$(id -g) alicegabriel/seissol-training <some command>
 ```
 As this command is rather long, we provide the wrapper script [tool.sh](tool.sh).
 
