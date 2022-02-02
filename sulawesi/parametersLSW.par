@@ -82,12 +82,13 @@ OutputFile = 'output/SulawesiLSW'
 Format = 10                                    ! Format (10= no output, 6=hdf5 output)
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
+!                 |strain     |eta
+iPlasticityMask = 0 0 0 0 0 0 1
 printIntervalCriterion = 2                     ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
 TimeInterval = 5.                              ! Index of printed info at time
 refinement = 2
 
 ! off-fault ascii receivers
-nRecordPoints = 33                             ! number of Record points which are read from file
 RFileName = 'GPSfiltered_proj_200m_8e6.dat'    ! Record Points in extra file
 pickdt = 0.01                                  ! Pickpoint Sampling
 pickDtType = 1                                 ! Pickpoint Type
