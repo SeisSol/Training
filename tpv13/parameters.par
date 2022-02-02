@@ -70,8 +70,10 @@ ClusteredLTS = 2                               ! Enable local time-stepping
 FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/tpv13'
 Format = 10                                    ! Format (10=no output, 6=hdf5 output)
-!             |stress     |vel  
-iOutputMask = 1 1 1 1 1 1 1 1 1 
+!             |stress     |vel
+iOutputMask = 0 0 0 0 0 0 1 1 1
+!                 |strain     |eta
+iPlasticityMask = 0 0 0 0 0 0 1
 TimeInterval =  5.                           ! Index of printed info at time
 refinement = 1
 
@@ -84,7 +86,6 @@ printIntervalCriterion = 2          ! Criterion for index of printed info: 1=tim
 
 pickdt = 0.005                       ! Pickpoint Sampling
 pickDtType = 1                       ! Pickpoint Type
-nRecordPoints = 0                    ! number of Record points which are read from file
 RFileName = 'tpv12_13_receivers.dat'      ! Record Points in extra file
 
 ! xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
