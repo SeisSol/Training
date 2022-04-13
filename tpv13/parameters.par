@@ -69,7 +69,7 @@ ClusteredLTS = 2                               ! Enable local time-stepping
 &Output
 FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/tpv13'
-Format = 10                                    ! Format (10=no output, 6=hdf5 output)
+Format = 6                                     ! Format (10=no output, 6=hdf5 output)
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
 !                 |strain     |eta
