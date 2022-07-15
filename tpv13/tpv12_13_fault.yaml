@@ -21,8 +21,11 @@
         mu_d:        0.10
         d_c:         0.50
         cohesion: -200000
-[Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
+[nuc_xx,nuc_xy,nuc_xz,nuc_yy,nuc_yz,nuc_zz]: !ConstantMap
     map:
-        Tnuc_n: 0
-        Tnuc_s: 0
-        Tnuc_d: 0
+        nuc_xx: 0
+        nuc_xy: 0
+        nuc_xz: 0
+        nuc_yy: 0
+        nuc_yz: 0
+        nuc_zz: 0
