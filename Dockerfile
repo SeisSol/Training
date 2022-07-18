@@ -147,6 +147,7 @@ RUN apt-get update \
     libocct-modeling-data-7.5 \
     libocct-foundation-7.5 \
     libtbb2 \
+    libyaml-cpp-dev \
     python3 \
     python3-pip \
     python3-setuptools \
