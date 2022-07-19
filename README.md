@@ -40,7 +40,7 @@ The following tools are currently included:
 - PUMGen (mesh generation for SeisSol, https://github.com/SeisSol/PUMGen, see also SeisSol's documentation https://seissol.readthedocs.io/en/latest/meshing-with-pumgen.html)
 - GMSH (open source 3D finite element mesh generator, client only, https://gmsh.info)
 - rconv (tool to describe point and finite source models in SeisSol's NetCDF Rupture Format, https://seissol.readthedocs.io/en/latest/standard-rupture-format.html#how-to-use-rconv)
-- SeisSol O4 (pre-compiled SeisSol with 4th order space-time accuracy, https://seissol.readthedocs.io)
+- SeisSol O4 (pre-compiled SeisSol (commit `153338af`) with 4th order space-time accuracy for elastic and viscoelastic materials, https://seissol.readthedocs.io)
 
 I.e.
 ```

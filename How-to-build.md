@@ -26,7 +26,7 @@ If you build the docker container, it will fetch and build:
 * `docker build --tag seissol/seissol-training -f ./Dockerfile`: If any problems occur during the build, adapt `Dockerfile`.
 * `docker run -p 53155:53155 seissol/seissol-training` (optional, for testing)
 * `docker push seissol/seissol-training:latest`
-* commit changes to the docker file and push to github.
+* commit changes to the docker file and push to github. In particular change the SeisSol commit hash in `README.md`.
 
 
 
