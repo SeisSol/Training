@@ -1,0 +1,29 @@
+!Switch
+[mu_s, mu_d, d_c]: !ConstantMap
+      map:
+        mu_s:        0.60
+        mu_d:        0.10
+        d_c:         0.2
+[forced_rupture_time, cohesion]: !LuaMap
+  returns: [forced_rupture_time, cohesion]
+  # Jia et al. E1 center (-25.03, -57.57) projected on Slab2 along depth (39-> 21km)
+  function: |
+     function f (x)
+      xh = -56533.6328
+      yh = -56738.6094
+      zh = -14389.161621
+      r_crit = 2500.0
+      r = math.sqrt((x["x"]-xh)^2 + (x["y"]-yh)^2 + (x["z"]-zh)^2 )
+      Vs = 3000.0
+      if (r <= r_crit) then
+        forced_rupture_time = r/(0.7*Vs)+(0.081*r_crit/(0.7*Vs))*(1.0/(1.0-(r/r_crit)^2)-1.0)
+      else 
+        forced_rupture_time = 1000000000.0
+      end
+        
+      return {
+        forced_rupture_time = forced_rupture_time,
+        cohesion = -400000.-400*math.max(x["z"]+4000.,0)
+      }
+      end
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include NZ_initial_stressLSW.yaml

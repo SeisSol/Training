@@ -1,0 +1,55 @@
+!EvalModel
+parameters: [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz,ShapeNucleation]
+model: !Switch
+  [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]: !EvalModel
+    parameters: [sig_zz, S]
+    model: !Switch
+      [sig_zz]: !Include NZ_sigzz.yaml
+      [S]: !LuaMap
+        returns: [S]
+        function: |
+            function f(x)
+                R = 3.0
+                return {
+                    S = (1.0 / R - 1.0)
+                }
+            end
+    components: !AndersonianStress
+      constants:
+        mu_d:      0.1
+        mu_s:      0.6
+        cohesion:  0.0
+        s2ratio:   0.15
+        S_v: 2
+        SH_max: 100
+  [ShapeNucleation]: !LuaMap
+      returns: [ShapeNucleation]
+      function: |
+        function f(x)
+            ShapeNucleation = 0.0
+            xh = 6143466.3672
+            yh = -3956738.6094
+            zh = -14389.161621
+            r_crit = 2000.0
+            r = math.sqrt((x["x"] - xh) ^ 2 + (x["y"] - yh) ^ 2 + (x["z"] - zh) ^ 2)
+            if (r < r_crit) then
+                ShapeNucleation = math.exp(r ^ 2 / (r ^ 2 - r_crit ^ 2))
+            end
+            return {
+                ShapeNucleation = ShapeNucleation
+            }
+        end
+components: !LuaMap
+  returns: [nuc_xx, nuc_yy, nuc_zz, nuc_xy, nuc_yz, nuc_xz]
+  function: |
+    function f(x)
+        return {
+            nuc_xx = x["ShapeNucleation"] * x["b_xx"],
+            nuc_yy = x["ShapeNucleation"] * x["b_yy"],
+            nuc_zz = x["ShapeNucleation"] * x["b_zz"],
+            nuc_xy = x["ShapeNucleation"] * x["b_xy"],
+            nuc_yz = x["ShapeNucleation"] * x["b_yz"],
+            nuc_xz = x["ShapeNucleation"] * x["b_xz"]
+        }
+    end
+
