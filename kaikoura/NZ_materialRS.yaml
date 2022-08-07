@@ -1,0 +1,41 @@
+!Switch
+[rho, mu, lambda]:  !IdentityMap
+  components:
+    - !ASAGI
+      file: asagi/NZ_asagi.nc
+      parameters: [rho, mu, lambda]
+      var: data
+    - !ConstantMap
+        map:
+         rho: 3330.
+         mu: 65942325000.
+         lambda: 81235350000.
+[bulkFriction]: !ConstantMap
+  map:
+    bulkFriction: 0.6
+[plastCo]: !IdentityMap
+  components:
+    - !SphericalDomainFilter
+      radius: 4.0e3
+      centre:
+        x:  -56533.6328
+        y: -56738.6094
+        z: -14389.161621
+      components: !ConstantMap
+        map:
+          plastCo: 1.0e20
+    - !LayeredModel
+      map: !AffineMap
+        matrix:
+          z0: [0.0, 0.0, 1.0]
+        translation:
+          z0: 0
+      interpolation: linear
+      parameters: [plastCo]
+      nodes:
+        10e10:    [4e6]
+        -500.0:  [4e6]
+        -3000.0:  [18e6]
+        -6000.0:  [5e7]
+        -10e10:   [5e7]
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include NZ_initial_stressRS.yaml

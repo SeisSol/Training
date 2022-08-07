@@ -1,0 +1,110 @@
+!EvalModel
+parameters: [Omega, b_xx, b_yy, b_zz, b_xy, b_yz, b_xz, sig_zz]
+model: !Switch
+  [Omega]: !LuaMap
+        returns: [Omega]
+        function: |
+            function f(x)
+                -- increase zStressDecreaseStart and zStressDecreaseStop
+                -- by 4km to the North (with a gradual transition of 15km)
+                xR1 = -0.013 * math.pow(10., 6.)
+                yR1 = -0.003 * math.pow(10., 6.)
+                xy1 = xR1 + yR1
+                xy2 = xy1 + 30000.
+                xy = x["x"] + x["y"]
+                alpha = math.max(0.0, math.min((xy - xy1) / (xy2 - xy1), 1.0))
+                increaseWidth = 4000.0
+
+                zStressDecreaseStart = -11000. - increaseWidth * alpha
+                zStressDecreaseStop = -15000. - increaseWidth * alpha
+                zStressDecreaseWidth = zStressDecreaseStart - zStressDecreaseStop
+
+                -- smooth step function
+                if (x["z"] >= zStressDecreaseStart) then
+                    Omega = 1.0
+                elseif (x["z"] >= zStressDecreaseStop) then
+                    a = 1.0 - (x["z"] - zStressDecreaseStop) / zStressDecreaseWidth
+                    Sx = (3.0 * a * a - 2.0 * a * a * a)
+                    Omega = 1.0 - Sx
+                else
+                    Omega = 0.001
+                end
+                return {
+                    Omega = Omega
+                }
+            end
+  [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]: !EvalModel
+    parameters: [S, SH_max, sig_zz]
+    model: !Switch
+      [S, SH_max]: !LuaMap
+        returns: [S, SH_max]
+        function: |
+            function f(x)
+                ratioRtopo = 0.7
+
+                -- increase Z_seis and decrease R0 to the North-East 
+                -- from the Jordan Thrust region (see Fig. 2)
+                xR1 = -0.013 * math.pow(10., 6.)
+                yR1 = -0.003 * math.pow(10., 6.)
+                xy1 = xR1 + yR1
+                xy2 = xy1 + 30000.
+                xy = x["x"] + x["y"]
+
+                alpha = math.max(0.0, math.min((xy - xy1) / (xy2 - xy1), 1.0))
+                Rmax = 0.8 - 0.10 * alpha
+
+                increaseWidth = 4000.0
+                zStressIncreaseStart = -7000. - increaseWidth * alpha
+                zStressIncreaseStop = -10000. - increaseWidth * alpha
+                zStressIncreaseWidth = zStressIncreaseStart - zStressIncreaseStop
+
+                -- smooth step function
+                if (x["z"] >= zStressIncreaseStart) then
+                    Rz = ratioRtopo
+                elseif (x["z"] >= zStressIncreaseStop) then
+                    a = 1.0 - (x["z"] - zStressIncreaseStop) / zStressIncreaseWidth
+                    Sx = (3.0 * a * a - 2.0 * a * a * a)
+                    Rz = ratioRtopo + (1.0 - ratioRtopo) * Sx
+                else
+                    Rz = 1.0
+                end
+
+                -- removes the stress concentration to the North-East 
+                -- (Needles fault region, see Fig. 2)
+                xR1 = -8500 + 0.03098 * math.pow(10., 6.)
+                yR1 = -8500 - 0.04686 * math.pow(10., 6.)
+                xy1 = xR1 + yR1
+                xy2 = xy1 + 10000.
+                xy = x["x"] + x["y"]
+
+                alpha = math.max(0.0, math.min((xy - xy1) / (xy2 - xy1), 1.0))
+                Rz = 0.4 * ratioRtopo * alpha + Rz * (1 - alpha)
+                R0 = Rz * Rmax
+
+                return {
+                    S = (1.0 / R0 - 1.0),
+                    SH_max = 100.0 - 10.0 * alpha
+                }
+            end
+      [sig_zz]: !Include NZ_sigzz.yaml
+    components: !AndersonianStress
+      constants:
+        mu_d:      0.1
+        mu_s:      0.6
+        cohesion:  0.0
+        s2ratio:   0.15
+        S_v: 2
+  [sig_zz]: !Include NZ_sigzz.yaml
+components: !LuaMap
+  returns: [s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]
+  function: |
+    function f(x)
+        return {
+            s_xx = x["Omega"] * x["b_xx"] + (1.0 - x["Omega"]) * x["sig_zz"],
+            s_yy = x["Omega"] * x["b_yy"] + (1.0 - x["Omega"]) * x["sig_zz"],
+            s_zz = x["Omega"] * x["b_zz"] + (1.0 - x["Omega"]) * x["sig_zz"],
+            s_xy = x["Omega"] * x["b_xy"],
+            s_yz = x["Omega"] * x["b_yz"],
+            s_xz = x["Omega"] * x["b_xz"]
+        }
+    end
