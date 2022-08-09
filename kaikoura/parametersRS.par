@@ -69,7 +69,7 @@ PPFileName = 'NZ_faultreceivers.dat'
 /
             
 &MeshNml
-MeshFile = 'meshes/NZmicro.puml.h5'         ! Name of mesh file
+MeshFile = 'NZmicro_full1500_small_box_only.puml.h5'         ! Name of mesh file
 meshgenerator = 'PUML'          ! Name of meshgenerator (Gambit3D-fast, Netcdf or PUML)
 /
 
