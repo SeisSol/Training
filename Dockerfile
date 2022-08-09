@@ -31,6 +31,7 @@ RUN apt-get update \
     libgomp1 \
     libopenmpi3 \
     libopenblas-base \
+    libreadline-dev \
     libyaml-cpp-dev \
     zlib1g \
     && rm -rf /var/lib/apt/lists/*
@@ -72,10 +73,15 @@ RUN git clone https://github.com/uphoffc/ImpalaJIT.git \
     && mkdir build && cd build \
     && cmake .. && make -j $(nproc) install 
 
+RUN wget https://www.lua.org/ftp/lua-5.3.6.tar.gz \
+    && tar -xzvf lua-5.3.6.tar.gz \
+    && cd lua-5.3.6 && make linux CC=mpicc && make local \
+    && cp -r install/* /home/tools && cd ..
+
 RUN git clone https://github.com/SeisSol/easi \
     && cd easi \
     && mkdir build && cd build \
-    && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=ON .. \
+    && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=ON .. \
     && make -j$(nproc) && make install
 
 RUN git clone https://github.com/hfp/libxsmm.git \
