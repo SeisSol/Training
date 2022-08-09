@@ -172,6 +172,7 @@ WORKDIR /home/training
 COPY tpv13/ tpv13/
 COPY sulawesi/ sulawesi/
 COPY northridge/ northridge/
+COPY kaikoura/ kaikoura/
 
 VOLUME ["/shared"]
 WORKDIR /shared
