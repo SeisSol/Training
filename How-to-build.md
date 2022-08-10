@@ -1,6 +1,9 @@
 # How to build and deploy the docker container
+Normally, the container would be built in a github action and automatically deployed.
+During a pull request, the github action will build and deploy the image `seissol/training:pr-<id>`, where `id` is the id of the pull request on github.
+Once a tag in the form `v1.2.3` is released on github, the pipeline will push to `seissol/training:v1.2.3` and to `seissol/training:latest`.
 
-If you build the docker container, it will fetch and build:
+During build time of the container, it will fetch and build:
 * ASAGI latest github revision
 * ImpalaJIT latest github revision
 * PROJ version 4.9.3
@@ -16,17 +19,16 @@ If you build the docker container, it will fetch and build:
 * pumgen latest github revision
 * rconv lateste github revision
 
+# Manual build
+Although everything should be handled by the github actions, you might want to build and test the docker container locally:
+
 ## Prerequisites
 * docker installation
-* private copy of parmetis-4.0.3.tar.gz (their github repo is kind of broken and they have a rather restrictive licence)
 * dockerhub account with write access to `alicegabriel` or `seissol`
 
-## How to build
-* `docker login`: Enter your username and password.
-* `docker build --tag seissol/seissol-training -f ./Dockerfile`: If any problems occur during the build, adapt `Dockerfile`.
-* `docker run -p 53155:53155 seissol/seissol-training` (optional, for testing)
-* `docker push seissol/seissol-training:latest`
-* commit changes to the docker file and push to github. In particular change the SeisSol commit hash in `README.md`.
+## How to manually build
+* `docker build --tag seissol/training -f ./Dockerfile`: If any problems occur during the build, adapt `Dockerfile`.
+* `docker run -p 53155:53155 seissol/training` (optional, for testing)
 
 
 

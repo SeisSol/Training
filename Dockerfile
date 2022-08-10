@@ -72,7 +72,7 @@ RUN git clone https://github.com/uphoffc/ImpalaJIT.git \
     && mkdir build && cd build \
     && cmake .. && make -j $(nproc) install 
 
-RUN wget https://www.lua.org/ftp/lua-5.3.6.tar.gz \
+RUN wget --progress=bar:force:noscroll https://www.lua.org/ftp/lua-5.3.6.tar.gz \
     && tar -xzvf lua-5.3.6.tar.gz \
     && cd lua-5.3.6 && make linux CC=mpicc && make local \
     && cp -r install/* /home/tools && cd ..
