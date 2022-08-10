@@ -39,13 +39,13 @@ RUN apt-get update \
 RUN mkdir -p /home/tools
 
 WORKDIR /tmp
-RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2 \
+RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2 \
     && tar -xvf hdf5-1.10.7.tar.bz2 \
     && cd hdf5-1.10.7 \
     && CFLAGS="-fPIC" CC=mpicc FC=mpif90 ./configure --enable-parallel --with-zlib --disable-shared --enable-fortran --prefix /home/tools \
     && make -j$(nproc) && make install
 
-RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
+RUN wget --progress=bar:force:noscroll ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
     && tar -xvf netcdf-c-4.7.4.tar.gz \
     && cd netcdf-c-4.7.4 \
     && CFLAGS="-fPIC" CC=/home/tools/bin/h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap \
@@ -60,6 +60,31 @@ RUN wget --progress=bar:force:noscroll https://deb.debian.org/debian/pool/non-fr
     && cp build/Linux-x86_64/libmetis/libmetis.a /home/tools/lib \
     && cp metis/include/metis.h /home/tools/include
 
+RUN wget --progress=bar:force:noscroll https://www.lua.org/ftp/lua-5.3.6.tar.gz \
+    && tar -xzvf lua-5.3.6.tar.gz \
+    && cd lua-5.3.6 && make linux CC=mpicc && make local \
+    && cp -r install/* /home/tools && cd ..
+
+RUN wget --progress=bar:force:noscroll https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz \
+    && tar -xf eigen-3.4.0.tar.gz \
+    && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
+    && make -j$(nproc) install 
+
+RUN git clone https://github.com/OSGeo/PROJ.git \
+    && cd PROJ && git checkout 4.9.3 \
+    && mkdir build && cd build \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
+    && make -j$(nproc) && make install
+
+RUN git clone https://github.com/hfp/libxsmm.git \
+    && cd libxsmm \
+    && git checkout 1.16.1 \
+    && make -j$(nproc) generator \
+    && cp bin/libxsmm_gemm_generator /home/tools/bin
+
+### Put all dependencies, which point to a specific version, before this comment
+### Put all dependencies, which use the lates version, after this comment to reduce build time
+
 RUN git clone https://github.com/TUM-I5/ASAGI.git \
     && cd ASAGI \
     && git submodule update --init \
@@ -72,33 +97,11 @@ RUN git clone https://github.com/uphoffc/ImpalaJIT.git \
     && mkdir build && cd build \
     && cmake .. && make -j $(nproc) install 
 
-RUN wget --progress=bar:force:noscroll https://www.lua.org/ftp/lua-5.3.6.tar.gz \
-    && tar -xzvf lua-5.3.6.tar.gz \
-    && cd lua-5.3.6 && make linux CC=mpicc && make local \
-    && cp -r install/* /home/tools && cd ..
-
 RUN git clone https://github.com/SeisSol/easi \
     && cd easi \
     && mkdir build && cd build \
     && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=ON .. \
     && make -j$(nproc) && make install
-
-RUN git clone https://github.com/hfp/libxsmm.git \
-    && cd libxsmm \
-    && git checkout 1.16.1 \
-    && make -j$(nproc) generator \
-    && cp bin/libxsmm_gemm_generator /home/tools/bin
-
-RUN git clone https://github.com/OSGeo/PROJ.git \
-    && cd PROJ && git checkout 4.9.3 \
-    && mkdir build && cd build \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
-    && make -j$(nproc) && make install
-
-RUN wget --progress=bar:force:noscroll https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz \
-    && tar -xf eigen-3.4.0.tar.gz \
-    && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
-    && make -j$(nproc) install 
 
 RUN git clone https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
