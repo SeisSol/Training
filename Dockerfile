@@ -2,38 +2,38 @@ FROM debian:bullseye-slim
 
 RUN apt-get update \
     && apt-get install -y \
-    wget \
-    ca-certificates \
     bzip2 \
-    gcc \
-    g++ \
-    gfortran \
-    make \
+    ca-certificates \
     cmake \
+    g++ \
+    gcc \
+    gfortran \
+    git \
+    libgomp1 \
     libnuma-dev \
     libnuma1 \
-    libopenblas-dev \
-    libopenmpi-dev \
     libocct-data-exchange-7.5 \
     libocct-data-exchange-dev \
+    libocct-foundation-7.5 \
+    libocct-foundation-dev \
     libocct-modeling-algorithms-7.5 \
     libocct-modeling-algorithms-dev \
     libocct-modeling-data-7.5 \
     libocct-modeling-data-dev \
-    libocct-foundation-7.5 \
-    libocct-foundation-dev \
+    libopenblas-base \
+    libopenblas-dev \
+    libopenmpi-dev \
+    libopenmpi3 \
+    libreadline-dev \
     libtbb2 \
-    zlib1g-dev \
+    libyaml-cpp-dev \
+    make \
     pkg-config \
-    git \
     python3 \
     python3-numpy \
-    libgomp1 \
-    libopenmpi3 \
-    libopenblas-base \
-    libreadline-dev \
-    libyaml-cpp-dev \
+    wget \
     zlib1g \
+    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /home/tools
@@ -133,34 +133,29 @@ RUN git clone https://github.com/SeisSol/PUMGen.git \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
     && make -j$(nproc) && make install
 
-RUN wget https://gmsh.info/src/gmsh-4.8.4-source.tgz \
-    && tar -xvf gmsh-4.8.4-source.tgz \
-    && cd gmsh-4.8.4-source && mkdir build && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_BUILD_TYPE=Release -DENABLE_OCC=ON -DENABLE_BUILD_LIB=ON -DENABLE_BUILD_SHARED=ON \
-    && make -j$(nproc) && make install
-
 FROM debian:bullseye-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+    gmsh \
     libgomp1 \
-    libopenmpi3 \
-    openmpi-bin \
     libnuma1 \
-    libopenblas-base \
     libocct-data-exchange-7.5 \
+    libocct-foundation-7.5 \
     libocct-modeling-algorithms-7.5 \
     libocct-modeling-data-7.5 \
-    libocct-foundation-7.5 \
+    libopenblas-base \
+    libopenmpi3 \
     libtbb2 \
+    libxrender1 \
     libyaml-cpp-dev \
+    openmpi-bin \
     python3 \
     python3-pip \
     python3-setuptools \
-    zlib1g \
-    libxrender1 \
-    xvfb \
     tini \
+    xvfb \
+    zlib1g \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home
