@@ -51,9 +51,8 @@ RUN wget ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
     && CFLAGS="-fPIC" CC=/home/tools/bin/h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap \
     && make -j$(nproc) && make install
 
-# You need to have a private copy of parmetis-4.0.3.tar.gz
-COPY ./parmetis-4.0.3.tar.gz /tmp/parmetis-4.0.3.tar.gz
-RUN tar -xvf parmetis-4.0.3.tar.gz \
+RUN wget --progress=bar:force:noscroll https://deb.debian.org/debian/pool/non-free/p/parmetis/parmetis_4.0.3.orig.tar.gz \
+    && tar -xvf parmetis_4.0.3.orig.tar.gz \
     && cd parmetis-4.0.3 \
     && sed -i 's/IDXTYPEWIDTH 32/IDXTYPEWIDTH 64/g' ./metis/include/metis.h \
     && CC=mpicc CXX=mpicxx make config prefix=/home/tools \
