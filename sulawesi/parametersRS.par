@@ -29,9 +29,9 @@ ModelFileName = 'Sulawesi_faultRS.yaml'
 RS_f0 = 0.6
 RS_sr0 = 1d-6
 RS_b = 0.014
-Mu_W=0.1
+RS_MuW=0.1
 RS_iniSlipRate1 = 1d-16
-RS_iniSlipRate2 = 0d0
+RS_iniSlipRate2 = 0.0
 t_0 = 0.5
 
 !reference vector for defining strike and dip direction

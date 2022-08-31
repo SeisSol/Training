@@ -12,9 +12,9 @@
      1500.0:  [0.02]
      -4000.0: [0.01]
      -10e10:   [0.01]
-[RS_sl0]: !ConstantMap
+[rs_sl0]: !ConstantMap
   map:
-    RS_sl0: 0.2
+    rs_sl0: 0.2
 [rs_srW]: !IdentityMap
   components:
     #we remove the characteristic velocity increase in CCFZ to help the rupture
