@@ -20,3 +20,8 @@
       }
       return 1000000000.0;
 [s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressLSW.yaml
+[Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
+    map:
+        Tnuc_n: 0
+        Tnuc_s: 0
+        Tnuc_d: 0
