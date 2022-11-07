@@ -105,7 +105,7 @@ RUN git clone https://github.com/SeisSol/easi \
 
 RUN git clone https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
-    && git checkout 80a266e \
+    && git checkout 973cc45 \
     && git submodule update --init \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
