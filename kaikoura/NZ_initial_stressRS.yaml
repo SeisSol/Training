@@ -72,7 +72,7 @@ model: !Switch
                 -- removes the stress concentration to the North-East 
                 -- (Needles fault region, see Fig. 2)
                 xR1 = -8500 + 0.03098 * math.pow(10., 6.)
-                yR1 = -8500 - 0.04686 * math.pow(10., 6.)
+                yR1 = -8500 + 0.04686 * math.pow(10., 6.)
                 xy1 = xR1 + yR1
                 xy2 = xy1 + 10000.
                 xy = x["x"] + x["y"]

@@ -27,8 +27,8 @@ model: !Switch
       function: |
         function f(x)
             ShapeNucleation = 0.0
-            xh = 6143466.3672
-            yh = -3956738.6094
+            xh = 6143466.3672 - 6200000.0
+            yh = -3956738.6094 + 3900000
             zh = -14389.161621
             r_crit = 2000.0
             r = math.sqrt((x["x"] - xh) ^ 2 + (x["y"] - yh) ^ 2 + (x["z"] - zh) ^ 2)
