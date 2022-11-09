@@ -4,21 +4,28 @@
         mu_s:        0.60
         mu_d:        0.10
         d_c:         0.10
-[cohesion, forced_rupture_time]: !FunctionMap
-  map:
-    cohesion: |
-        return -400000.-400*max(z+4000.,0);
-    forced_rupture_time: |
-      xc =  17700.0;
-      yc = 55580.0;
-      zc = -10000.0;
-      r = sqrt(pow(x-xc, 2.0) + pow(y-yc, 2.0) + pow(z-zc, 2.0));
-      r_crit = 4000.0;
-      Vs = 3464.0;
-      if (r <= r_crit) {
-        return r/(0.7*Vs)+(0.081.0*r_crit/(0.7.0*Vs))*(1.0/(1.0-pow(r/r_crit, 2.0))-1.0);
+[cohesion, forced_rupture_time]: !LuaMap
+  returns: [cohesion, forced_rupture_time]
+  function: |
+      function f(x)
+          xc =  17700.0
+          yc = 55580.0
+          zc = -10000.0
+          r = math.sqrt((x["x"]-xc)^2.0 + (x["y"]-yc)^2.0 + (x["z"]-zc)^2.0)
+          r_crit = 4000.0
+          Vs = 3464.0
+
+          if r <= r_crit then
+              forced_rupture_time = r/(0.7*Vs)+(0.0810*r_crit/(0.7*Vs))*(1.0/(1.0-(r/r_crit)^2.0)-1.0)
+          else 
+              forced_rupture_time = 1000000000.0
+          end
+      return {
+        cohesion =  -400000.-400*math.max(x["z"] + 4000.0, 0),
+        forced_rupture_time = forced_rupture_time
       }
-      return 1000000000.0;
+      end
+    forced_rupture_time: |
 [s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressLSW.yaml
 [Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
     map:

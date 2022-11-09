@@ -1,31 +1,40 @@
 !EvalModel
 parameters: [Omega, eCS, b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]
 model: !Switch
-  [Omega]: !FunctionMap
-    #Tappering of the deviatoric stress with depth
-    map: 
-      Omega: |
-       zStressDecreaseStart = -11000.;
-       zStressDecreaseStop = -15000.;
-       zStressDecreaseWidth = zStressDecreaseStart - zStressDecreaseStop;
-
-       if  (z>=zStressDecreaseStart) {
-          return 1.0;
-       } else {
-          if (z>=zStressDecreaseStop) {
-             a = 1.0-(z-zStressDecreaseStop)/zStressDecreaseWidth;
-             Sx = (3.0*a*a-2.0*a*a*a);
-             return 1.0-Sx;
-          } else {
-            return 0.001;
-          }
-       }
+  [Omega]: !LuaMap
+    returns: ["Omega"]
+    # Tappering of the deviatoric stress with depth
+    function: |
+        function f(x)
+            zStressDecreaseStart = -11000.0
+            zStressDecreaseStop = -15000.0
+            zStressDecreaseWidth = zStressDecreaseStart - zStressDecreaseStop;
+            
+            if  x["z"] >= zStressDecreaseStart then
+                    Omega = 1.0
+            else
+                if x["z"] >= zStressDecreaseStop then
+                    a = 1.0-(x["z"]-zStressDecreaseStop)/zStressDecreaseWidth
+                    Sx = (3.0*a*a-2.0*a*a*a)
+                    Omega = 1.0-Sx
+                else
+                    Omega = 0.001;
+                end
+            end
+            return {
+                Omega = Omega
+            }
+        end
   [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]: !EvalModel
     parameters: [effectiveConfiningStress]
-    model: !FunctionMap
-      map:
-        effectiveConfiningStress: |
-          return 2670.0*0.15*9.8*min(-1500.0,z);
+    model: !LuaMap
+        returns: ["effectiveConfiningStress"]
+        function: |
+            function f(x)
+                return{
+                    effectiveConfiningStress = 2670.0*0.15*9.8*math.min(-1500.0,x["z"])
+                }
+            end
     components: !OptimalStress
       constants:
         mu_d:      0.1
@@ -36,16 +45,28 @@ model: !Switch
         cohesion:  0.0
         s2ratio:   0.7
         R:         0.7
-  [eCS]: !FunctionMap
+  [eCS]: !LuaMap
     map:
       #avoid positive stress above z=0
-      eCS: |
-        return 2670.0*0.15*9.8*min(-1500.0,z);
-components: !FunctionMap
-  map:
-    s_xx:     return Omega*b_xx + (1.0-Omega)*eCS;
-    s_yy:     return Omega*b_yy + (1.0-Omega)*eCS;
-    s_zz:     return Omega*b_zz + (1.0-Omega)*eCS;
-    s_xy:     return Omega*b_xy;
-    s_yz:     return Omega*b_yz;
-    s_xz:     return Omega*b_xz;
+    returns: ["eCS"]
+    function: |
+            function f(x)
+                return {
+                    eCS = 2670.0*0.15*9.8*math.min(-1500.0,x["z"])
+                }
+            end
+
+components: !LuaMap
+    returns: ["s_xx", "s_yy", "s_zz", "s_xy", "s_yz", "s_xz"]
+    function: |
+            function f(x)
+                return {
+                    s_xx = x["Omega"] * x["b_xx"] + (1.0 - x["Omega"]) * x["eCS"],
+                    s_yy = x["Omega"] * x["b_yy"] + (1.0 - x["Omega"]) * x["eCS"],
+                    s_zz = x["Omega"] * x["b_zz"] + (1.0 - x["Omega"]) * x["eCS"],
+                    s_xy = x["Omega"] * x["b_xy"],
+                    s_yz = x["Omega"] * x["b_yz"],
+                    s_xz = x["Omega"] * x["b_xz"],
+                }
+            end
+
