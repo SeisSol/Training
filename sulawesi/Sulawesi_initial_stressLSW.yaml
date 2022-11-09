@@ -18,13 +18,14 @@ model: !Switch
                     Sx = (3.0*a*a-2.0*a*a*a)
                     Omega = 1.0-Sx
                 else
-                    Omega = 0.001;
+                    Omega = 0.001
                 end
             end
             return {
                 Omega = Omega
             }
         end
+
   [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]: !EvalModel
     parameters: [effectiveConfiningStress]
     model: !LuaMap
@@ -46,8 +47,7 @@ model: !Switch
         s2ratio:   0.7
         R:         0.7
   [eCS]: !LuaMap
-    map:
-      #avoid positive stress above z=0
+    #avoid positive stress above z=0
     returns: ["eCS"]
     function: |
             function f(x)

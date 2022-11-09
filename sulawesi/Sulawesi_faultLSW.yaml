@@ -25,7 +25,6 @@
         forced_rupture_time = forced_rupture_time
       }
       end
-    forced_rupture_time: |
 [s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include Sulawesi_initial_stressLSW.yaml
 [Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
     map:
