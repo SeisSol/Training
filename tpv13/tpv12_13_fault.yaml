@@ -21,8 +21,9 @@
         mu_d:        0.10
         d_c:         0.50
         cohesion: -200000
-[Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
+[Tnuc_n, Tnuc_s, Tnuc_d, forced_rupture_time]: !ConstantMap
     map:
         Tnuc_n: 0
         Tnuc_s: 0
         Tnuc_d: 0
+        forced_rupture_time: 1e10
