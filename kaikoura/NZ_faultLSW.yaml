@@ -6,7 +6,6 @@
         d_c:         0.2
 [forced_rupture_time, cohesion]: !LuaMap
   returns: [forced_rupture_time, cohesion]
-  # Jia et al. E1 center (-25.03, -57.57) projected on Slab2 along depth (39-> 21km)
   function: |
      function f (x)
       xh = -56533.6328

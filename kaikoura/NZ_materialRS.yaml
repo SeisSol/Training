@@ -1,15 +1,25 @@
 !Switch
-[rho, mu, lambda]:  !IdentityMap
-  components:
-    - !ASAGI
-      file: asagi/NZ_asagi.nc
-      parameters: [rho, mu, lambda]
-      var: data
-    - !ConstantMap
-        map:
-         rho: 3330.
-         mu: 65942325000.
-         lambda: 81235350000.
+[rho, mu, lambda, Qp, Qs]: !EvalModel
+    parameters: [rho, mu, lambda]
+    model: !Switch
+        [rho, mu, lambda]:  !Include NZ_rhomulambda_large.yaml
+    components: !LuaMap
+        returns: [rho, mu, lambda, Qp, Qs]
+        function: |
+            function f(x)
+                rho = x["rho"]
+                mu = x["mu"]
+                lambda = x["lambda"]
+                Qs = 0.05 * math.sqrt(mu/rho)
+                Qp = 2.0 * Qs
+                return {
+                    rho = rho,
+                    mu = mu,
+                    lambda = lambda,
+                    Qp = Qp,
+                    Qs = Qs
+                }
+            end
 [bulkFriction]: !ConstantMap
   map:
     bulkFriction: 0.6
