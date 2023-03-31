@@ -165,7 +165,8 @@ RUN apt-get update \
 WORKDIR /home
 COPY --from=0 /home/tools tools
 COPY requirements.txt .
-RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt
+### need to specify --user for gmsh installation, otherwise the tpv13 notebook can't execute !gmsh
+RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt && pip install --user gmsh
 
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
