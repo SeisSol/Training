@@ -154,11 +154,18 @@ RUN apt-get update \
 
 WORKDIR /home
 COPY --from=0 /home/tools tools
-COPY requirements.txt .
 ### need to specify --user for gmsh installation, otherwise the tpv13 notebook can't execute !gmsh
-ENV PROJ_DIR=/home/tools
-RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt && pip install --user gmsh && docker-clean
-RUN conda install pyproj==3.2.1 && docker-clean
+RUN conda install \
+    panel \
+    ipyvtklink \
+    vtk \
+    pyvista \
+    ipywidgets \
+    scipy \
+    pyproj \
+    matplotlib \
+    && docker-clean
+RUN python3 -m pip install --upgrade pip && pip install --user gmsh && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
 ENV OMP_PROC_BIND="spread"
