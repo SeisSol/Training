@@ -1,14 +1,12 @@
-FROM debian:bullseye-slim
+FROM ghcr.io/seisscoped/container-base
 
 RUN apt-get update \
     && apt-get install -y \
     bzip2 \
-    ca-certificates \
     cmake \
     g++ \
     gcc \
     gfortran \
-    git \
     libgomp1 \
     libnuma-dev \
     libnuma1 \
@@ -22,19 +20,13 @@ RUN apt-get update \
     libocct-modeling-data-dev \
     libopenblas-base \
     libopenblas-dev \
-    libopenmpi-dev \
-    libopenmpi3 \
     libreadline-dev \
     libtbb2 \
     libyaml-cpp-dev \
-    make \
     pkg-config \
-    python3 \
-    python3-numpy \
-    wget \
     zlib1g \
     zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-clean 
 
 RUN mkdir -p /home/tools
 
@@ -42,7 +34,7 @@ WORKDIR /tmp
 RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2 \
     && tar -xvf hdf5-1.10.7.tar.bz2 \
     && cd hdf5-1.10.7 \
-    && CFLAGS="-fPIC" CC=mpicc FC=mpif90 ./configure --enable-parallel --with-zlib --disable-shared --enable-fortran --prefix /home/tools \
+    && CFLAGS="-fPIC" CC=mpicc FC="mpif90 --std=f95" ./configure --enable-parallel --with-zlib --disable-shared --prefix /home/tools \
     && make -j$(nproc) && make install
 
 RUN wget --progress=bar:force:noscroll ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
@@ -103,6 +95,8 @@ RUN git clone https://github.com/SeisSol/easi \
     && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=ON .. \
     && make -j$(nproc) && make install
 
+RUN pip install numpy && docker-clean
+
 RUN git clone https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && git checkout 973cc45 \
@@ -137,7 +131,7 @@ RUN git clone https://github.com/SeisSol/PUMGen.git \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
     && make -j$(nproc) && make install
 
-FROM debian:bullseye-slim
+FROM ghcr.io/seisscoped/container-base
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -153,21 +147,18 @@ RUN apt-get update \
     libtbb2 \
     libxrender1 \
     libyaml-cpp-dev \
-    openmpi-bin \
-    python3 \
-    python3-pip \
-    python3-setuptools \
     tini \
     xvfb \
     zlib1g \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-clean 
 
 WORKDIR /home
 COPY --from=0 /home/tools tools
 COPY requirements.txt .
 ### need to specify --user for gmsh installation, otherwise the tpv13 notebook can't execute !gmsh
-RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt && pip install --user gmsh
-
+ENV PROJ_DIR=/home/tools
+RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt && pip install --user gmsh && docker-clean
+RUN conda install pyproj==3.2.1 && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
 ENV OMP_PROC_BIND="spread"
