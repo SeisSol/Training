@@ -4,7 +4,13 @@ ulimit -Ss unlimited
 
 if [ -z $1 ]
 then
-    cd /home/training
+    if grep "docker/containers" /proc/self/mountinfo -qa; then
+        cd /home/training
+    else
+        # it is not in docker, thus singularity
+        cp -r /home/training $(pwd)/seissol-training
+        cd $(pwd)/seissol-training
+    fi
     set -x
     export DISPLAY=:99.0
     export PYVISTA_OFF_SCREEN=true
@@ -30,6 +36,6 @@ case "$1" in
         exec "$@"
     ;;
     *)
-        echo "Unknown command: $1"
+        exec "$@"
     ;;
 esac
