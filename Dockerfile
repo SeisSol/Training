@@ -32,7 +32,7 @@ RUN mkdir -p /home/tools
 
 WORKDIR /tmp
 
-ENV PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:${PATH}" \
+ENV PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:/home/tools/bin:${PATH}" \
     LD_LIBRARY_PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib"
 
 RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.2/src/hdf5-1.12.2.tar.bz2 \
