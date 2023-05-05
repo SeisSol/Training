@@ -178,4 +178,4 @@ RUN chmod -R 777 /home/training
 
 VOLUME ["/shared"]
 WORKDIR /shared
-ENTRYPOINT ["tini", "-g", "/entrypoint.sh", "--"]
+ENTRYPOINT ["tini", "-s", "-g", "/entrypoint.sh", "--"]
