@@ -8,6 +8,7 @@ RUN apt-get update \
     gcc \
     gfortran \
     libgomp1 \
+    libhdf5-mpi-dev \
     libnuma-dev \
     libnuma1 \
     libocct-data-exchange-7.5 \
@@ -18,6 +19,7 @@ RUN apt-get update \
     libocct-modeling-algorithms-dev \
     libocct-modeling-data-7.5 \
     libocct-modeling-data-dev \
+    libopenmpi-dev \
     libopenblas-base \
     libopenblas-dev \
     libreadline-dev \
@@ -31,16 +33,11 @@ RUN apt-get update \
 RUN mkdir -p /home/tools
 
 WORKDIR /tmp
-RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2 \
-    && tar -xvf hdf5-1.10.7.tar.bz2 \
-    && cd hdf5-1.10.7 \
-    && CFLAGS="-fPIC" CC=mpicc FC="mpif90 --std=f95" ./configure --enable-parallel --with-zlib --disable-shared --prefix /home/tools \
-    && make -j$(nproc) && make install
 
-RUN wget --progress=bar:force:noscroll ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
-    && tar -xvf netcdf-c-4.7.4.tar.gz \
-    && cd netcdf-c-4.7.4 \
-    && CFLAGS="-fPIC" CC=/home/tools/bin/h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap \
+RUN wget --progress=bar:force:noscroll https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz \
+    && tar -xvf netcdf-c-4.9.2.tar.gz \
+    && cd netcdf-c-4.9.2 \
+    && CFLAGS="-fPIC" CC=h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap --disable-byterange \
     && make -j$(nproc) && make install
 
 RUN wget --progress=bar:force:noscroll https://deb.debian.org/debian/pool/non-free/p/parmetis/parmetis_4.0.3.orig.tar.gz \
@@ -75,7 +72,7 @@ RUN git clone https://github.com/hfp/libxsmm.git \
     && cp bin/libxsmm_gemm_generator /home/tools/bin
 
 ### Put all dependencies, which point to a specific version, before this comment
-### Put all dependencies, which use the lates version, after this comment to reduce build time
+### Put all dependencies, which use the latest version, after this comment to reduce build time
 
 RUN git clone https://github.com/TUM-I5/ASAGI.git \
     && cd ASAGI \
@@ -99,7 +96,7 @@ RUN pip install numpy && docker-clean
 
 RUN git clone https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
-    && git checkout 973cc45 \
+    && git checkout v1.0.1 \
     && git submodule update --init \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
@@ -177,6 +174,7 @@ COPY tpv13/ tpv13/
 COPY sulawesi/ sulawesi/
 COPY northridge/ northridge/
 COPY kaikoura/ kaikoura/
+RUN chmod -R 777 /home/training
 
 VOLUME ["/shared"]
 WORKDIR /shared
