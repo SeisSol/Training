@@ -59,24 +59,22 @@ RUN wget --progress=bar:force:noscroll https://gitlab.com/libeigen/eigen/-/archi
     && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
     && make -j$(nproc) install 
 
-RUN git clone https://github.com/OSGeo/PROJ.git \
-    && cd PROJ && git checkout 4.9.3 \
+RUN git clone --depth 1 --single-branch --branch 4.9.3 https://github.com/OSGeo/PROJ.git \
+    && cd PROJ \
     && mkdir build && cd build \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
     && make -j$(nproc) && make install
 
-RUN git clone https://github.com/hfp/libxsmm.git \
+RUN git clone --depth 1 --single-branch --branch 1.16.1 https://github.com/hfp/libxsmm.git \
     && cd libxsmm \
-    && git checkout 1.16.1 \
     && make -j$(nproc) generator \
     && cp bin/libxsmm_gemm_generator /home/tools/bin
 
 ### Put all dependencies, which point to a specific version, before this comment
 ### Put all dependencies, which use the latest version, after this comment to reduce build time
 
-RUN git clone https://github.com/TUM-I5/ASAGI.git \
+RUN git clone --recursive https://github.com/TUM-I5/ASAGI.git \
     && cd ASAGI \
-    && git submodule update --init \
     && mkdir build && cd build \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DNONUMA=on \
     && make -j$(nproc) && make install
@@ -94,10 +92,8 @@ RUN git clone https://github.com/SeisSol/easi \
 
 RUN pip install numpy && docker-clean
 
-RUN git clone https://github.com/SeisSol/SeisSol.git \
+RUN git clone --recursive --depth 1 --single-branch --branch v1.0.1 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
-    && git checkout v1.0.1 \
-    && git submodule update --init \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DCMAKE_Fortran_FLAGS="-ffast-math -funsafe-math-optimizations" \
@@ -113,17 +109,14 @@ RUN cd SeisSol/preprocessing/science/rconv \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_PREFIX_PATH=/home/tools \
     && make -j$(nproc) && cp rconv /home/tools/bin/
 
-RUN git clone https://github.com/SCOREC/core.git \
+RUN git clone --recursive --depth 1 --single-branch --branch v2.2.7 https://github.com/SCOREC/core.git \
     && cd core \
-    && git checkout tags/v2.2.7 \
-    && git submodule update --init \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release -DSCOREC_CXX_FLAGS="-Wno-error=array-bounds" \
     && make -j$(nproc) && make install
 
-RUN git clone https://github.com/SeisSol/PUMGen.git \
+RUN git clone --recursive https://github.com/SeisSol/PUMGen.git \
     && cd PUMGen \
-    && git submodule update --init \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
     && make -j$(nproc) && make install
