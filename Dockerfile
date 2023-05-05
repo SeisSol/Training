@@ -8,7 +8,6 @@ RUN apt-get update \
     gcc \
     gfortran \
     libgomp1 \
-    libhdf5-mpi-dev \
     libnuma-dev \
     libnuma1 \
     libocct-data-exchange-7.5 \
@@ -19,7 +18,6 @@ RUN apt-get update \
     libocct-modeling-algorithms-dev \
     libocct-modeling-data-7.5 \
     libocct-modeling-data-dev \
-    libopenmpi-dev \
     libopenblas-base \
     libopenblas-dev \
     libreadline-dev \
@@ -33,6 +31,15 @@ RUN apt-get update \
 RUN mkdir -p /home/tools
 
 WORKDIR /tmp
+
+ENV PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:${PATH}" \
+    LD_LIBRARY_PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib"
+
+RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.2/src/hdf5-1.12.2.tar.bz2 \
+    && tar -xvf hdf5-1.12.2.tar.bz2 \
+    && cd hdf5-1.12.2 \
+    && CFLAGS="-fPIC" CC=mpicc FC="mpif90 --std=f95" ./configure --enable-parallel --with-zlib --disable-shared --prefix /home/tools \
+    && make -j$(nproc) && make install
 
 RUN wget --progress=bar:force:noscroll https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz \
     && tar -xvf netcdf-c-4.9.2.tar.gz \
