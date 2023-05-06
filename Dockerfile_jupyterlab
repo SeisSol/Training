@@ -25,6 +25,7 @@ RUN apt-get update \
     libyaml-cpp-dev \
     libmpich-dev \
     mpich \
+    m4 \
     pkg-config \
     zlib1g \
     zlib1g-dev \
