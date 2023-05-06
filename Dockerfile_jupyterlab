@@ -102,6 +102,10 @@ RUN pip install numpy && docker-clean
 
 RUN git clone --recursive --depth 1 --single-branch --branch v1.0.1 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
+    && if [ "$TARGETARCH" == "arm64" ]; \
+       then sed -i 's/ + \[-mno-red-zone\]//g' generated_code/SConscript; fi\
+    && if [ "$TARGETARCH" == "arm64" ]; \
+       then sed -i '/if (HAS_REDZONE)/i set(HAS_REDZONE OFF)' CMakeLists.txt; fi\
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=Eigen -DHOST_ARCH=noarch -DASAGI=on -DNETCDF=on -DORDER=4 -DCMAKE_Fortran_FLAGS="-ffast-math -funsafe-math-optimizations" \
