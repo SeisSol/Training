@@ -37,6 +37,8 @@ WORKDIR /tmp
 
 ENV PATH="/home/tools/bin:${PATH}" 
 
+ARG TARGETARCH
+
 RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.2/src/hdf5-1.12.2.tar.bz2 \
     && tar -xvf hdf5-1.12.2.tar.bz2 \
     && cd hdf5-1.12.2 \
@@ -55,7 +57,9 @@ RUN wget --progress=bar:force:noscroll https://deb.debian.org/debian/pool/non-fr
     && sed -i 's/IDXTYPEWIDTH 32/IDXTYPEWIDTH 64/g' ./metis/include/metis.h \
     && CC=mpicc CXX=mpicxx make config prefix=/home/tools \
     && make -j$(nproc) && make install \
-    && cp build/Linux-x86_64/libmetis/libmetis.a /home/tools/lib \
+    && if [ "$TARGETARCH" == "arm64" ]; \
+       then cp build/Linux-aarch64/libmetis/libmetis.a /home/tools/lib; \
+       else cp build/Linux-x86_64/libmetis/libmetis.a /home/tools/lib; fi \
     && cp metis/include/metis.h /home/tools/include
 
 RUN wget --progress=bar:force:noscroll https://www.lua.org/ftp/lua-5.3.6.tar.gz \
