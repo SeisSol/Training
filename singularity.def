@@ -1,11 +1,4 @@
 Bootstrap: docker
 From: seissol/training:latest
 
-%post
-  sed -i 's/\/home\/training/~\/.seissol-training/g' /entrypoint.sh
-
-%runscript
-  cp -r /home/training ~/.seissol-training
-  /entrypoint.sh
-
 
