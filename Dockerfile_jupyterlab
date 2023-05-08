@@ -167,13 +167,17 @@ RUN conda install \
     scipy \
     pyproj \
     matplotlib \
+    gmsh \
+    python-gmsh \
     && docker-clean
-RUN conda install -c conda-forge gmsh && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
 ENV OMP_PROC_BIND="spread"
 ENV PYTHONPATH="${PYTHONPATH}:/home/tools/lib"
 COPY entrypoint.sh /entrypoint.sh
+RUN cd /home/tools/bin/ \
+    && mv SeisSol_Release_dnoarch_4_elastic SeisSol_Release_dhsw_4_elastic \
+    && mv SeisSol_Release_dnoarch_4_viscoelastic2 SeisSol_Release_dhsw_4_viscoelastic2
 
 WORKDIR /home/training
 COPY tpv13/ tpv13/
