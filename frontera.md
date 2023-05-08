@@ -31,7 +31,7 @@ OMP_NUM_THREADS=56 mpirun singularity run ~/my-training.md seissol parameters.pa
 On one node of Frontera:
 
 Scenario                | runtime
-------------------------+---------
+------------------------|---------
 Kaikoura LSW            | 15 min
 Kaikoura RS             | 11 min
 Northridge elastic      | 3 min
