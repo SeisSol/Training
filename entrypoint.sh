@@ -29,11 +29,11 @@ case "$1" in
         exec "$@"
     ;;
     seissol)
-        set -- SeisSol_Release_dnoarch_4_elastic "${@:2}"
+        set -- SeisSol_Release_dhsw_4_elastic "${@:2}"
         exec "$@"
     ;;
     seissol_viscoelastic)
-        set -- SeisSol_Release_dnoarch_4_viscoelastic2 "${@:2}"
+        set -- SeisSol_Release_dhsw_4_viscoelastic2 "${@:2}"
         exec "$@"
     ;;
     *)
