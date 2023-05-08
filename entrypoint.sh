@@ -8,7 +8,8 @@ then
         cd /home/training
     else
         # it is not in docker, thus singularity
-        cp -r /home/training $(pwd)/seissol-training
+        mkdir -p $(pwd)/seissol-training
+        cp -r /home/training/* $(pwd)/seissol-training
         cd $(pwd)/seissol-training
     fi
     set -x
