@@ -161,8 +161,9 @@ RUN conda install \
     scipy \
     pyproj \
     matplotlib \
+    gmsh \
+    python-gmsh \
     && docker-clean
-RUN python3 -m pip install --upgrade pip && pip install --user gmsh && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
 ENV OMP_PROC_BIND="spread"
