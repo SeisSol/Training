@@ -1,14 +1,12 @@
-FROM debian:bullseye-slim
+FROM ghcr.io/seisscoped/container-base
 
 RUN apt-get update \
     && apt-get install -y \
     bzip2 \
-    ca-certificates \
     cmake \
     g++ \
     gcc \
     gfortran \
-    git \
     libgomp1 \
     libnuma-dev \
     libnuma1 \
@@ -22,33 +20,31 @@ RUN apt-get update \
     libocct-modeling-data-dev \
     libopenblas-base \
     libopenblas-dev \
-    libopenmpi-dev \
-    libopenmpi3 \
     libreadline-dev \
     libtbb2 \
     libyaml-cpp-dev \
-    make \
     pkg-config \
-    python3 \
-    python3-numpy \
-    wget \
     zlib1g \
     zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-clean 
 
 RUN mkdir -p /home/tools
 
 WORKDIR /tmp
-RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/src/hdf5-1.10.7.tar.bz2 \
-    && tar -xvf hdf5-1.10.7.tar.bz2 \
-    && cd hdf5-1.10.7 \
-    && CFLAGS="-fPIC" CC=mpicc FC=mpif90 ./configure --enable-parallel --with-zlib --disable-shared --enable-fortran --prefix /home/tools \
+
+ENV PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/bin:/home/tools/bin:${PATH}" \
+    LD_LIBRARY_PATH="/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/libfabric/lib:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib/release:/opt/intel/compilers_and_libraries_2020.1.217/linux/mpi/intel64/lib"
+
+RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.2/src/hdf5-1.12.2.tar.bz2 \
+    && tar -xvf hdf5-1.12.2.tar.bz2 \
+    && cd hdf5-1.12.2 \
+    && CFLAGS="-fPIC" CC=mpicc FC="mpif90 --std=f95" ./configure --enable-parallel --with-zlib --disable-shared --prefix /home/tools \
     && make -j$(nproc) && make install
 
-RUN wget --progress=bar:force:noscroll ftp://ftp.unidata.ucar.edu/pub/netcdf/netcdf-c-4.7.4.tar.gz \
-    && tar -xvf netcdf-c-4.7.4.tar.gz \
-    && cd netcdf-c-4.7.4 \
-    && CFLAGS="-fPIC" CC=/home/tools/bin/h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap \
+RUN wget --progress=bar:force:noscroll https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz \
+    && tar -xvf netcdf-c-4.9.2.tar.gz \
+    && cd netcdf-c-4.9.2 \
+    && CFLAGS="-fPIC" CC=h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap --disable-byterange \
     && make -j$(nproc) && make install
 
 RUN wget --progress=bar:force:noscroll https://deb.debian.org/debian/pool/non-free/p/parmetis/parmetis_4.0.3.orig.tar.gz \
@@ -70,24 +66,22 @@ RUN wget --progress=bar:force:noscroll https://gitlab.com/libeigen/eigen/-/archi
     && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
     && make -j$(nproc) install 
 
-RUN git clone https://github.com/OSGeo/PROJ.git \
-    && cd PROJ && git checkout 4.9.3 \
+RUN git clone --depth 1 --single-branch --branch 4.9.3 https://github.com/OSGeo/PROJ.git \
+    && cd PROJ \
     && mkdir build && cd build \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
     && make -j$(nproc) && make install
 
-RUN git clone https://github.com/hfp/libxsmm.git \
+RUN git clone --depth 1 --single-branch --branch 1.16.1 https://github.com/hfp/libxsmm.git \
     && cd libxsmm \
-    && git checkout 1.16.1 \
     && make -j$(nproc) generator \
     && cp bin/libxsmm_gemm_generator /home/tools/bin
 
 ### Put all dependencies, which point to a specific version, before this comment
-### Put all dependencies, which use the lates version, after this comment to reduce build time
+### Put all dependencies, which use the latest version, after this comment to reduce build time
 
-RUN git clone https://github.com/TUM-I5/ASAGI.git \
+RUN git clone --recursive https://github.com/TUM-I5/ASAGI.git \
     && cd ASAGI \
-    && git submodule update --init \
     && mkdir build && cd build \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DNONUMA=on \
     && make -j$(nproc) && make install
@@ -103,10 +97,10 @@ RUN git clone https://github.com/SeisSol/easi \
     && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=ON .. \
     && make -j$(nproc) && make install
 
-RUN git clone https://github.com/SeisSol/SeisSol.git \
+RUN pip install numpy && docker-clean
+
+RUN git clone --recursive --depth 1 --single-branch --branch v1.0.1 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
-    && git checkout 973cc45 \
-    && git submodule update --init \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DCMAKE_Fortran_FLAGS="-ffast-math -funsafe-math-optimizations" \
@@ -122,22 +116,19 @@ RUN cd SeisSol/preprocessing/science/rconv \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_PREFIX_PATH=/home/tools \
     && make -j$(nproc) && cp rconv /home/tools/bin/
 
-RUN git clone https://github.com/SCOREC/core.git \
+RUN git clone --recursive --depth 1 --single-branch --branch v2.2.7 https://github.com/SCOREC/core.git \
     && cd core \
-    && git checkout tags/v2.2.7 \
-    && git submodule update --init \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release -DSCOREC_CXX_FLAGS="-Wno-error=array-bounds" \
     && make -j$(nproc) && make install
 
-RUN git clone https://github.com/SeisSol/PUMGen.git \
+RUN git clone --recursive https://github.com/SeisSol/PUMGen.git \
     && cd PUMGen \
-    && git submodule update --init \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
     && make -j$(nproc) && make install
 
-FROM debian:bullseye-slim
+FROM ghcr.io/seisscoped/container-base
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -153,21 +144,26 @@ RUN apt-get update \
     libtbb2 \
     libxrender1 \
     libyaml-cpp-dev \
-    openmpi-bin \
-    python3 \
-    python3-pip \
-    python3-setuptools \
     tini \
     xvfb \
     zlib1g \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-clean 
 
 WORKDIR /home
 COPY --from=0 /home/tools tools
-COPY requirements.txt .
 ### need to specify --user for gmsh installation, otherwise the tpv13 notebook can't execute !gmsh
-RUN python3 -m pip install --upgrade pip && pip3 install -r requirements.txt && pip install --user gmsh
-
+RUN conda install \
+    panel \
+    ipyvtklink \
+    vtk \
+    pyvista \
+    ipywidgets \
+    scipy \
+    pyproj \
+    matplotlib \
+    gmsh \
+    python-gmsh \
+    && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
 ENV OMP_PROC_BIND="spread"
@@ -179,7 +175,8 @@ COPY tpv13/ tpv13/
 COPY sulawesi/ sulawesi/
 COPY northridge/ northridge/
 COPY kaikoura/ kaikoura/
+RUN chmod -R 777 /home/training
 
 VOLUME ["/shared"]
 WORKDIR /shared
-ENTRYPOINT ["tini", "-g", "/entrypoint.sh", "--"]
+ENTRYPOINT ["tini", "-s", "-g", "/entrypoint.sh", "--"]

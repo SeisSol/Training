@@ -1,0 +1,4 @@
+Bootstrap: docker
+From: seissol/training:latest
+
+

@@ -1,8 +1,0 @@
-panel==0.13.1
-ipyvtklink==0.2.2 
-vtk==9.0.3
-pyvista==0.31.1
-jupyterlab==3.0.16
-ipywidgets==8.0.4
-scipy==1.7.1
-pyproj==3.2.1
