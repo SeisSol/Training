@@ -72,13 +72,13 @@ Format = 6                                     ! Format (10=no output, 6=hdf5 ou
 iOutputMask = 0 0 0 0 0 0 1 1 1
 !                 |strain     |eta
 iPlasticityMask = 0 0 0 0 0 0 1
-TimeInterval =  5.                           ! Index of printed info at time
+TimeInterval =  4.                           ! Index of printed info at time
 refinement = 1
 
 ! Free surface output
 SurfaceOutput = 1
 SurfaceOutputRefinement = 1
-SurfaceOutputInterval = 5.0
+SurfaceOutputInterval = 2.0
 
 printIntervalCriterion = 2          ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
 
