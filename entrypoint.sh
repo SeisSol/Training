@@ -6,6 +6,8 @@ if [ -z $1 ]
 then
     if grep "docker/containers" /proc/self/mountinfo -qa; then
         cd /home/training
+    elif [[ $container == "podman" ]]; then
+        cd /home/training
     else
         # it is not in docker, thus singularity
         mkdir -p $(pwd)/seissol-training
