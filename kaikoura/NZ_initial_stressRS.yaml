@@ -36,9 +36,38 @@ model: !Switch
   [b_xx, b_yy, b_zz, b_xy, b_yz, b_xz]: !EvalModel
     parameters: [S, SH_max, sig_zz]
     model: !Switch
-      [S, SH_max]: !LuaMap
-        returns: [S, SH_max]
-        function: |
+      [S, SH_max]: !EvalModel
+        parameters: [x,y,z, group]
+        model: !Switch
+         [group]: !Any
+            components:
+              - !GroupFilter
+                groups: 65
+                components: !ConstantMap
+                  map:
+                    group:    65
+              - !GroupFilter
+                groups: 3
+                components: !ConstantMap
+                  map:
+                    group:    3        
+              - !GroupFilter
+                groups: 1
+                components: !ConstantMap
+                  map:
+                    group:    1
+         [x,y,z]: !AffineMap
+            matrix:
+              x: [1.0, 0.0, 0.0]
+              y: [0.0, 1.0, 0.0]
+              z: [0.0, 0.0, 1.0]
+            translation:
+              x: 0.0
+              y: 0.0
+              z: 0.0
+        components: !LuaMap
+          returns: [S, SH_max]
+          function: |
             function f(x)
                 ratioRtopo = 0.70
 
@@ -71,14 +100,24 @@ model: !Switch
 
                 -- removes the stress concentration to the North-East 
                 -- (Needles fault region, see Fig. 2)
-                xR1 = -8500 + 0.03098 * math.pow(10., 6.)
-                yR1 = -8500 + 0.04686 * math.pow(10., 6.)
-                xy1 = xR1 + yR1
-                xy2 = xy1 + 10000.
-                xy = x["x"] + x["y"]
 
-                alpha = math.max(0.0, math.min((xy - xy1) / (xy2 - xy1), 1.0))
-                Rz = 0.4 * ratioRtopo * alpha + Rz * (1 - alpha)
+                if (x["group"] == 65) then
+                    alpha = 1.0
+                elseif  (x["group"] == 3) then
+                    alpha = 0.0
+                else
+                    -- this is for the initial stress for plasticity
+                    xy1 = 0.0
+                    x2y = x["x"] + 2.0 * x["y"]
+                    alpha = math.max(0.0, math.min((x2y - xy1) / 20000.0, 1.0))
+                end
+
+                xy1 = 90e3
+                x2y = x["x"] + 2.0 * x["y"]
+                alpha_needles = math.max(0.0, math.min((x2y - xy1) / 20000.0, 1.0))
+
+                Rz = ratioRtopo * alpha + Rz * (1 - alpha)
+                Rz = Rz * ( alpha_needles * 0.4 + (1.0-alpha_needles) *1.0 )
                 R0 = Rz * Rmax
 
                 return {

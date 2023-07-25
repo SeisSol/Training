@@ -12,43 +12,33 @@
      1500.0:  [0.02]
      -4000.0: [0.01]
      -10e10:   [0.01]
-[rs_sl0]: !ConstantMap
-  map:
-    rs_sl0: 0.2
-[rs_srW]: !IdentityMap
-  components:
-    #we remove the characteristic velocity increase in CCFZ to help the rupture
-    #transfer HFZ-CCFZ
-    - !SphericalDomainFilter
-      radius: 5.0e3
-      centre:
-        x:  -39020.0
-        y: -42050.0
-        z: -1504.0
-      components: !ConstantMap
-        map:
-          rs_srW: 0.1
-    - !SphericalDomainFilter
-      radius: 5.0e3
-      centre:
-        x:  14500.0
-        y: 640.0
-        z: -1500.0
-      components: !ConstantMap
-        map:
-          rs_srW: 0.1
-    - !LayeredModel
-      map: !AffineMap
-        matrix:
-          z0: [0.0, 0.0, 1.0]
-        translation:
-          z0: 0
-      interpolation: linear
-      parameters: [rs_srW]
-      nodes:
-         10e10:    [1.0]
-         1500.0:  [1.0]
-         -4000.0: [0.1]
-         -10e10:   [0.1]
+[rs_sl0, rs_srW]: !LuaMap
+    returns: [rs_sl0, rs_srW]
+    function: |
+        function f(x)
+            xy1 = 10000. + 2.0 * 10000.0
+            x2y = x["x"] + 2.0 * x["y"]
+            alpha = math.max(0.0, math.min((x2y - xy1) / 20000.0, 1.0))
+            alpha_z = math.max(0.0, math.min((x["z"] + 4000) / 5500.0, 1.0))
+
+            r_crit = 5000.0
+            xh = -39020.0
+            yh = -42050.0
+            zh = -1504.0
+           r1 = math.sqrt((x["x"] - xh) ^ 2 + (x["y"] - yh) ^ 2 + (x["z"] - zh) ^ 2)
+           xh = 14500.0
+           yh = 640.0
+           zh = -1500.0
+           r2 = math.sqrt((x["x"] - xh) ^ 2 + (x["y"] - yh) ^ 2 + (x["z"] - zh) ^ 2)
+           alpha_spherical_domain = 1.0
+           if (math.min(r1, r2) < r_crit) then
+              alpha_spherical_domain = 0.0
+           end
+           alpha = 0.0
+           return {
+                rs_sl0 =  0.2 + 0.4 * alpha,
+                rs_srW =  0.1 + alpha_spherical_domain * (0.2 * alpha + 0.8 * alpha_z)
+           }
+        end
 [s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include NZ_initial_stressRS.yaml
 [nuc_xx,nuc_yy,nuc_zz,nuc_xy, nuc_yz,nuc_xz]: !Include NZ_nucleation_stressRS.yaml
