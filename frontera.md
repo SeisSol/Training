@@ -23,7 +23,7 @@ To run the TPV13 scenario, you should:
 cd seissol-training/tpv13
 mpirun singularity run ~/my-training.sif gmsh -3 tpv13_training.geo
 mpirun singularity run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
-OMP_NUM_THREADS=56 mpirun singularity run ~/my-training.md seissol parameters.par
+OMP_NUM_THREADS=56 mpirun singularity run ~/my-training.sif seissol parameters.par
 ```
 
 ## Expected runtimes
