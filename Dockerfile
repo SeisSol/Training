@@ -99,11 +99,11 @@ RUN git clone https://github.com/SeisSol/easi \
 
 RUN pip install numpy && docker-clean
 
-RUN git clone --recursive --depth 1 --single-branch --branch v1.0.1 https://github.com/SeisSol/SeisSol.git \
+RUN git clone --recursive --depth 1 --single-branch --branch v1.1.3 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DCMAKE_Fortran_FLAGS="-ffast-math -funsafe-math-optimizations" \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DDR_QUAD_RULE_OPTIONS=dunavant \
     && make -j$(nproc) \
     && cmake .. -DEQUATIONS=viscoelastic2 -DNUMBER_OF_MECHANISMS=3 \
     && make -j$(nproc) \
