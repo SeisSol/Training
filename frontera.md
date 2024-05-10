@@ -40,6 +40,16 @@ mpirun apptainer run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
 OMP_NUM_THREADS=28 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
 ```
 
+To run the northridge scenario, you should:
+
+```
+cd seissol-training/northridge
+mpirun apptainer run ~/my-training.sif pumgen -s msh2 mesh_northridge.msh
+mpirun apptainer run ~/my-training.sif rconv -i northridge_resampled.srf -o northridge_resampled.nrf -x visualization.xdmf -m "+proj=tmerc +datum=WGS84 +k=0.9996 +lon_0=-118.5150 +lat_0=34.3440 +axis=enu"
+OMP_NUM_THREADS=28 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
+```
+You can change `seissol` to `SeisSol_Release_dhsw_4_viscoelastic2` if you want to run visco-elastic simulation instead of the default elastic one.
+
 ## Expected runtimes
 
 On one node of Frontera:
