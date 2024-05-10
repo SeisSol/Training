@@ -40,7 +40,7 @@ mpirun apptainer run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
 OMP_NUM_THREADS=28 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
 ```
 
-To run the northridge scenario, you should:
+To run the Northridge scenario, you should:
 
 ```
 cd seissol-training/northridge
