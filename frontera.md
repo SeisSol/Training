@@ -12,9 +12,17 @@ Then execute:
 
 ```
 module load tacc-apptainer
-singularity pull -F docker://seissol/training:latest
-singularity build -f my-training.sif singularity.def
-singularity run my-training.sif
+apptainer pull -F docker://seissol/training:latest
+apptainer build -f my-training.sif singularity.def
+apptainer run my-training.sif
+```
+
+You can also use the automatically generated container after pulling the docker container 
+
+```
+module load tacc-apptainer
+apptainer pull -F docker://seissol/training:latest
+apptainer run training_latest.sif
 ```
 
 You can abort the jupyter lab with Ctrl-C, confirm with `y`.
@@ -27,9 +35,9 @@ To run the TPV13 scenario, you should:
 
 ```
 cd seissol-training/tpv13
-mpirun singularity run ~/my-training.sif gmsh -3 tpv13_training.geo
-mpirun singularity run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
-OMP_NUM_THREADS=28 mpirun -n 2 singularity run ~/my-training.sif seissol parameters.par
+mpirun apptainer run ~/my-training.sif gmsh -3 tpv13_training.geo
+mpirun apptainer run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
+OMP_NUM_THREADS=28 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
 ```
 
 ## Expected runtimes
