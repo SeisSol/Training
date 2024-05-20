@@ -29,6 +29,32 @@ You can abort the jupyter lab with Ctrl-C, confirm with `y`.
 Now you should see a directory `seissol-training`.
 This folder should contain four directories for different scenarios.
 
+You can also open the jupyter notebook that runs on Frontera on your local machine with the following steps:
+Step 1: change `SHARED_PATH="/your/path/to/container/"` in line 75 of `job.jupyter` to the path there you pulled your sigularity container is built.
+Step 2: Run
+```
+sbatch job.jupyter
+```
+Step 3: Check the job status with
+```
+squeue -u $USER
+```
+Step 4: Once the status changes from `PD` to `R`, you will find the job output in a generated file `jupyter.out`.
+Step 5: Check the last few lines with
+```
+tail jupyter.out
+```
+You will get something like:
+```
+TACC: got login node jupyter port 60320
+TACC: created reverse ports on Frontera logins
+TACC: Your jupyter notebook server is now running at https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
+```
+Step 6: Paste the link to your local browser, you will have access to the Frontera environment on your local machine.
+```
+https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
+```
+
 ## Execution
 
 To run the TPV13 scenario, you should:
