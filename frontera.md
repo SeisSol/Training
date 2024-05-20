@@ -2,6 +2,12 @@
 
 ## Setup
 Copy `singularity.def` to your home directory on frontera.
+
+Then get an interactive session on a compute node. For example for a 30 min session:
+```
+idev -m 30 -N 1 --tasks-per-node 2 -p development
+```
+
 Then execute: 
 
 ```
@@ -23,7 +29,7 @@ To run the TPV13 scenario, you should:
 cd seissol-training/tpv13
 mpirun singularity run ~/my-training.sif gmsh -3 tpv13_training.geo
 mpirun singularity run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
-OMP_NUM_THREADS=56 mpirun singularity run ~/my-training.md seissol parameters.par
+OMP_NUM_THREADS=28 mpirun -n 2 singularity run ~/my-training.sif seissol parameters.par
 ```
 
 ## Expected runtimes
@@ -32,13 +38,13 @@ On one node of Frontera:
 
 Scenario                | runtime
 ------------------------|---------
-Kaikoura LSW            | 15 min
-Kaikoura RS             | 11 min
+Kaikoura LSW            | 9 min
+Kaikoura RS             | 7 min
 Northridge elastic      | 3 min
 Northridge viscoelastic | 5 min
-Sulawesi LSW            | 13 min
-Sulawesi RS             | 16 min
-TPV13                   | 1 min
+Sulawesi LSW            | 6 min
+Sulawesi RS             | 6 min
+TPV13                   | 12 s
 
 ## Visualization
 
