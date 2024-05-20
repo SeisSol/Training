@@ -30,6 +30,7 @@ Now you should see a directory `seissol-training`.
 This folder should contain four directories for different scenarios.
 
 You can also open the jupyter notebook that runs on Frontera on your local machine with the following steps:
+
 Step 1: change `SHARED_PATH="/your/path/to/container/"` in line 75 of `job.jupyter` to the path there you pulled your sigularity container is built.
 Step 2: Run
 ```
