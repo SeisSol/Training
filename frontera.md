@@ -38,7 +38,7 @@ To run the TPV13 scenario, you should:
 cd seissol-training/tpv13
 mpirun apptainer run ~/my-training.sif gmsh -3 tpv13_training.geo
 mpirun apptainer run ~/my-training.sif pumgen -s msh2 tpv13_training.msh
-OMP_NUM_THREADS=28 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
+OMP_NUM_THREADS=26 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
 ```
 
 To run the Northridge scenario, you should:
