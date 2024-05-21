@@ -12,11 +12,6 @@ FreqRatio=100
 &IniCondition
 /
 
-&Boundaries
-BC_fs = 1                               ! enable free surface boundaries
-BC_dr = 1                               ! enable fault boundaries
-BC_of = 1                               ! enable absorbing boundaries
-/
 
 &DynamicRupture
 FL = 103                      ! Friction law
@@ -38,7 +33,6 @@ YRef = 0.0
 ZRef = -1.0
 refPointMethod = 1
 
-RF_output_on = 0            ! Rupture front ascii output
 OutputPointType = 4         ! Type (0: no output, 3: ascii file, 4: paraview file, 5: 3+4)
 SlipRateOutputType=0        ! 0: (smoother) slip rate output evaluated from the difference between the velocity on both side of the fault
                             ! 1: slip rate output evaluated from the fault tractions and the failure criterion (less smooth but usually more accurate where the rupture front is well developped)
@@ -47,7 +41,6 @@ SlipRateOutputType=0        ! 0: (smoother) slip rate output evaluated from the 
 !see: https://seissol.readthedocs.io/en/latest/fault-output.html
 ! parameterize paraview file output
 &Elementwise
-printIntervalCriterion = 2       ! 1=iteration, 2=time
 printtimeinterval_sec = 1.0      ! Time interval at which output will be written
 OutputMask = 1 1 1 1 1 1 1 1 1 1 1   ! turn on and off fault outputs
 refinement_strategy = 2
@@ -80,14 +73,12 @@ ClusteredLTS = 2                     ! 1 for Global time stepping, 2,3,5,... Loc
 /
 
 &Output
-FaultOutputFlag = 1                  ! DR output (add this line only if DR is active)
 OutputFile = 'output/NZ_RS'
 Format = 10                          ! Format (10= no output, 6=hdf5 output)
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
 !                 |strain     |eta
 iPlasticityMask = 0 0 0 0 0 0 1
-printIntervalCriterion = 2           ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
 TimeInterval = 5.                    ! Index of printed info at time
 refinement = 0
 OutputRegionBounds = 6.10e6 6.27e6 -3.97e6 -3.80e6 -60e3 10e3 !(optional) array that describes the region 
@@ -96,7 +87,6 @@ OutputRegionBounds = 6.10e6 6.27e6 -3.97e6 -3.80e6 -60e3 10e3 !(optional) array 
 ! off-fault ascii receivers
 RFileName = 'receivers-NZfinal_SJF80_withHope_NewHumps-large.dat'      ! Record Points in extra file
 pickdt = 0.01                        ! Pickpoint Sampling
-pickDtType = 1                       ! Pickpoint Type
 ! (Optional) Synchronization point for receivers.
 !            If omitted, receivers are written at the end of the simulation.
 ReceiverOutputInterval = 5.0
@@ -114,6 +104,7 @@ EnergyOutput = 1 ! Computation of energy, written in csv file
 EnergyTerminalOutput = 1 ! Write energy to standard output
 EnergyOutputInterval = 0.2
 
+Checkpoint = 0
 /
            
 &AbortCriteria
