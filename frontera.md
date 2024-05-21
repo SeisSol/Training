@@ -23,6 +23,7 @@ You can also use the automatically generated container after pulling the docker 
 module load tacc-apptainer
 apptainer pull -F docker://seissol/training:latest
 apptainer run training_latest.sif
+ln -s ./training_latest.sif ~/my-training.sif
 ```
 
 You can abort the jupyter lab with Ctrl-C, confirm with `y`.
