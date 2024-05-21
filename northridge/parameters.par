@@ -8,12 +8,6 @@ FreqRatio=100
 &IniCondition
 /
 
-&Boundaries
-BC_fs = 1                                      ! enable free surface boundaries
-BC_dr = 0                                      ! enable fault boundaries
-BC_of = 1                                      ! enable absorbing boundaries
-/
-
 &SourceType
 Type = 42   ! 42: finite source in netcdf format
 FileName = './northridge_resampled.nrf' ! input file.
@@ -35,7 +29,6 @@ ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3
 /
 
 &Output
-FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/test'
 Format = 10                                     ! Format (10= no output, 6=hdf5 output)
 !             |stress     |vel
@@ -50,10 +43,7 @@ SurfaceOutput = 1
 SurfaceOutputRefinement = 1
 SurfaceOutputInterval = 1.0
 
-printIntervalCriterion = 2          ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
-
 pickdt = 0.005                       ! Pickpoint Sampling
-pickDtType = 1                       ! Pickpoint Type
 RFileName = 'offreceivers.dat'       ! Record Points in extra file
 
 !xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
@@ -63,6 +53,8 @@ RFileName = 'offreceivers.dat'       ! Record Points in extra file
 EnergyOutput = 1 ! Computation of energy, written in csv file
 EnergyTerminalOutput = 1 ! Write energy to standard output
 EnergyOutputInterval = 0.5
+
+Checkpoint = 0
 /
 
 &AbortCriteria
