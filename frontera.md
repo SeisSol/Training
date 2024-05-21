@@ -72,15 +72,19 @@ We present a workflow for running a Jupyter Lab remotely on Frontera, while inte
 You can take the following steps:
 
 Step 1: change `SHARED_PATH="/your/path/to/container/"` in line 75 of `job.jupyter` to the path where your sigularity container is built.
+
 Step 2: Run
 ```
 sbatch -A <your_project> job.jupyter
 ```
+
 Step 3: Check the job status with
 ```
 squeue -u $USER
 ```
+
 Step 4: Once the status changes from `PD` to `R`, you will find the job output in a generated file `jupyter.out`.
+
 Step 5: Check the last few lines with
 ```
 tail -f jupyter.out
@@ -92,6 +96,7 @@ TACC: created reverse ports on Frontera logins
 TACC: Your jupyter notebook server is now running at https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
 ```
 (and then Ctrl+C to stop monitoring the contents of `jupyter.out`)
+
 Step 6: Paste the link to your local browser, you will have access to the Frontera environment on your local machine.
 ```
 https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
