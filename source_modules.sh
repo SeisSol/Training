@@ -22,9 +22,10 @@ pip install --user vtk pyvista
 pip install --user --update gmsh
 pip install --user scipy matplotlib pyproj
 
+cp /work2/10000/jwjeremy/share/libgmsh.so.4.11.1  ~/.local/lib/libgmsh.so.4.11
+
 echo "MNMN: load appatainer module"
 module load tacc-apptainer
-
 
 #
 SHARED_PATH="/your/path/to/container/"
@@ -34,7 +35,7 @@ if [ ! -f $SIF_NAME ]; then
     if [ ! -f $SHARED_PATH/$SIF_NAME ]; then
         # load the image if no image exists in the shared directory
         echo "MNMN: pull the appatainer image"
-        apptainer pull -F docker://seissol/training:latest
+        apptainer pull -F docker://seissol/training:hps-2024-frontera
     else
         # create symlink to the shared directory
         echo "MNMN: create symlink to the shared directory"
