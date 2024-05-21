@@ -93,13 +93,22 @@ RUN git clone https://github.com/SeisSol/easi \
     && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=OFF .. \
     && make -j$(nproc) && make install
 
-RUN pip install numpy && pip install git+https://github.com/SeisSol/PSpaMM.git && docker-clean
+RUN pip install numpy && pip install git+https://github.com/SeisSol/PSpaMM.git@davschneller/compile-fixes && docker-clean
+
+#RUN git clone --depth 1 --single-branch --branch main https://github.com/libxsmm/libxsmm.git \
+#    && cd libxsmm \
+#    && make PLATFORM=1 JIT=1 AR=aarch64-linux-gnu-ar \
+#       FC=aarch64-linux-gnu-gfortran \
+#       CXX=aarch64-linux-gnu-g++ \
+#       CC=aarch64-linux-gnu-gcc \
+#       -j$(nproc) generator \
+#    && cp bin/libxsmm_gemm_generator /home/tools/bin
 
 RUN git clone --recursive --depth 1 --single-branch --branch v1.1.3 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=PSpaMM -DHOST_ARCH=neon -DASAGI=on -DNETCDF=on -DORDER=4 \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=PSpaMM -DHOST_ARCH=noarch -DASAGI=on -DNETCDF=on -DORDER=4 \
     && make -j$(nproc) \
     && cmake .. -DEQUATIONS=viscoelastic2 -DNUMBER_OF_MECHANISMS=3 \
     && make -j$(nproc) \
