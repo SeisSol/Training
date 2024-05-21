@@ -12,7 +12,7 @@ Then execute:
 
 ```
 module load tacc-apptainer
-apptainer pull -F docker://seissol/training:latest
+apptainer pull -F docker://seissol/training:hps-2024-frontera
 apptainer build -f my-training.sif singularity.def
 apptainer run my-training.sif
 ```
@@ -21,7 +21,7 @@ You can also use the automatically generated container after pulling the docker 
 
 ```
 module load tacc-apptainer
-apptainer pull -F docker://seissol/training:latest
+apptainer pull -F docker://seissol/training:hps-2024-frontera
 apptainer run training_latest.sif
 ln -s /absolute/path/to/training_latest.sif ~/my-training.sif
 ```
