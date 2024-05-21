@@ -12,11 +12,6 @@ FreqRatio=100
 &IniCondition
 /
 
-&Boundaries
-BC_fs = 1                                      ! enable free surface boundaries
-BC_dr = 1                                      ! enable fault boundaries
-BC_of = 1                                      ! enable absorbing boundaries
-/
 
 &DynamicRupture
 FL = 16                                         ! Friction law  
@@ -34,14 +29,12 @@ YRef = 0.0
 ZRef = -1.0
 refPointMethod = 1
 
-RF_output_on = 0                               ! Rupture front ascii output
 OutputPointType = 5                            ! Type (0: no output, 3: ascii file, 4: paraview file, 5: 3+4)
 /
 
 !see: https://seissol.readthedocs.io/en/latest/fault-output.html
 ! parameterize paraview file output
 &Elementwise
-printIntervalCriterion = 2                     ! 1=iteration, 2=time
 printtimeinterval_sec = 0.5                    ! Time interval at which output will be written
 OutputMask = 1 1 1 1 1 1 1 1 1 1 1             ! turn on and off fault outputs
 refinement_strategy = 2
@@ -74,21 +67,18 @@ ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3
 /
 
 &Output
-FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/SulawesiLSW'
 Format = 10                                    ! Format (10= no output, 6=hdf5 output)
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
 !                 |strain     |eta
 iPlasticityMask = 0 0 0 0 0 0 1
-printIntervalCriterion = 2                     ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
 TimeInterval = 5.                              ! Index of printed info at time
 refinement = 2
 
 ! off-fault ascii receivers
 RFileName = 'GPSfiltered_proj_200m_8e6.dat'    ! Record Points in extra file
 pickdt = 0.01                                  ! Pickpoint Sampling
-pickDtType = 1                                 ! Pickpoint Type
 ! (Optional) Synchronization point for receivers.
 !            If omitted, receivers are written at the end of the simulation.
 ReceiverOutputInterval = 1.0
@@ -106,6 +96,8 @@ SurfaceOutputInterval = 0.25
 EnergyOutput = 1 ! Computation of energy, written in csv file
 EnergyTerminalOutput = 1 ! Write energy to standard output
 EnergyOutputInterval = 0.5
+
+Checkpoint = 0
 /
 
 &AbortCriteria

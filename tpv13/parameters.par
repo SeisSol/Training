@@ -9,12 +9,6 @@ Tv = 0.03
 &IniCondition
 /
 
-&Boundaries
-BC_fs = 1                                      ! enable free surface boundaries
-BC_dr = 1                                      ! enable fault boundaries
-BC_of = 1                                      ! enable absorbing boundaries
-/
-
 &DynamicRupture
 ! linear slip-weakening friction
 FL = 16                                        ! Friction law  
@@ -30,14 +24,12 @@ YRef = -1.0
 ZRef = 0.0
 refPointMethod = 1
 
-RF_output_on = 0                                ! Rupture front ascii output
 OutputPointType = 4
 /
 
 !see: https://seissol.readthedocs.io/en/latest/fault-output.html
 !parameterize paraview file output
 &Elementwise
-printIntervalCriterion = 2                     ! 1=iteration, 2=time
 printtimeinterval_sec = 1.0                    ! Time interval at which output will be written
 OutputMask = 1 1 1 1 1 1 1 1 1 1 1             ! turn on and off fault outputs
 refinement_strategy = 2
@@ -65,7 +57,6 @@ ClusteredLTS = 2                               ! Enable local time-stepping
 /
 
 &Output
-FaultOutputFlag = 1                            ! DR output (add this line only if DR is active)
 OutputFile = 'output/tpv13'
 Format = 6                                     ! Format (10=no output, 6=hdf5 output)
 !             |stress     |vel
@@ -80,10 +71,7 @@ SurfaceOutput = 1
 SurfaceOutputRefinement = 1
 SurfaceOutputInterval = 2.0
 
-printIntervalCriterion = 2          ! Criterion for index of printed info: 1=timesteps,2=time,3=timesteps+time
-
 pickdt = 0.005                       ! Pickpoint Sampling
-pickDtType = 1                       ! Pickpoint Type
 RFileName = 'tpv12_13_receivers.dat'      ! Record Points in extra file
 
 ! xdmfWriterBackend = 'posix' ! (optional) The backend used in fault, wavefield,
@@ -93,6 +81,8 @@ RFileName = 'tpv12_13_receivers.dat'      ! Record Points in extra file
 EnergyOutput = 1 ! Computation of energy, written in csv file
 EnergyTerminalOutput = 1 ! Write energy to standard output
 EnergyOutputInterval = 0.5
+
+Checkpoint = 0
 /
 
 &AbortCriteria
