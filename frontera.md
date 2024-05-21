@@ -83,14 +83,15 @@ squeue -u $USER
 Step 4: Once the status changes from `PD` to `R`, you will find the job output in a generated file `jupyter.out`.
 Step 5: Check the last few lines with
 ```
-tail jupyter.out
+tail -f jupyter.out
 ```
-Wait a few seconds until you get in `jupyter.out` something like:
+wait a few seconds until you get in `jupyter.out` something like:
 ```
 TACC: got login node jupyter port 60320
 TACC: created reverse ports on Frontera logins
 TACC: Your jupyter notebook server is now running at https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
 ```
+(and then Ctrl+C to stop monitoring the contents of `jupyter.out`)
 Step 6: Paste the link to your local browser, you will have access to the Frontera environment on your local machine.
 ```
 https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
