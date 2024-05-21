@@ -23,7 +23,7 @@
 #SBATCH -p development          # Queue name
 #SBATCH -N 1                    # Total number of nodes requested
 #SBATCH -n 2                    # Total number of mpi tasks requested
-#SBATCH -t 02:00:00                     # Run time (hh:mm:ss)
+#SBATCH -t 02:00:00             # Run time (hh:mm:ss)
 #
 #
 #--------------------------------------------------------------------------
