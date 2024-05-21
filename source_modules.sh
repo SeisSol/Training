@@ -19,6 +19,8 @@ export PATH="$PATH:$HOME/.local"
 pip uninstall -y urllib3
 pip install --user 'urllib3<2.0'
 pip install --user vtk pyvista
+pip install --user --update gmsh
+pip install --user scipy matplotlib pyproj
 
 echo "MNMN: load appatainer module"
 module load tacc-apptainer
