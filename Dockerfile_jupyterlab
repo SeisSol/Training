@@ -1,0 +1,191 @@
+FROM ghcr.io/seisscoped/container-base:ubuntu22.04_jupyterlab
+
+RUN apt-get update \
+    && apt-get install -y \
+    bzip2 \
+    cmake \
+    g++ \
+    gcc \
+    gfortran \
+    libgomp1 \
+    libnuma-dev \
+    libnuma1 \
+    libocct-data-exchange-7.5 \
+    libocct-data-exchange-dev \
+    libocct-foundation-7.5 \
+    libocct-foundation-dev \
+    libocct-modeling-algorithms-7.5 \
+    libocct-modeling-algorithms-dev \
+    libocct-modeling-data-7.5 \
+    libocct-modeling-data-dev \
+    libopenblas-base \
+    libopenblas-dev \
+    libreadline-dev \
+    libtbb2 \
+    libyaml-cpp-dev \
+    libmpich-dev \
+    mpich \
+    m4 \
+    pkg-config \
+    zlib1g \
+    zlib1g-dev \
+    && docker-clean 
+
+RUN mkdir -p /home/tools
+
+WORKDIR /tmp
+
+ENV PATH="/home/tools/bin:${PATH}" 
+
+ARG TARGETARCH
+
+RUN wget --progress=bar:force:noscroll https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.2/src/hdf5-1.12.2.tar.bz2 \
+    && tar -xvf hdf5-1.12.2.tar.bz2 \
+    && cd hdf5-1.12.2 \
+    && CFLAGS="-fPIC" CC=mpicc FC="mpif90 --std=f95" ./configure --enable-parallel --with-zlib --disable-shared --prefix /home/tools \
+    && make -j$(nproc) && make install
+
+RUN wget --progress=bar:force:noscroll https://downloads.unidata.ucar.edu/netcdf-c/4.9.2/netcdf-c-4.9.2.tar.gz \
+    && tar -xvf netcdf-c-4.9.2.tar.gz \
+    && cd netcdf-c-4.9.2 \
+    && CFLAGS="-fPIC" CC=h5pcc ./configure --enable-shared=no --prefix=/home/tools --disable-dap --disable-byterange \
+    && make -j$(nproc) && make install
+
+RUN wget --progress=bar:force:noscroll https://deb.debian.org/debian/pool/non-free/p/parmetis/parmetis_4.0.3.orig.tar.gz \
+    && tar -xvf parmetis_4.0.3.orig.tar.gz \
+    && cd parmetis-4.0.3 \
+    && sed -i 's/IDXTYPEWIDTH 32/IDXTYPEWIDTH 64/g' ./metis/include/metis.h \
+    && CC=mpicc CXX=mpicxx make config prefix=/home/tools \
+    && make -j$(nproc) && make install \
+    && if [ "$TARGETARCH" == "arm64" ]; \
+       then cp build/Linux-aarch64/libmetis/libmetis.a /home/tools/lib; \
+       else cp build/Linux-x86_64/libmetis/libmetis.a /home/tools/lib; fi \
+    && cp metis/include/metis.h /home/tools/include
+
+RUN wget --progress=bar:force:noscroll https://www.lua.org/ftp/lua-5.3.6.tar.gz \
+    && tar -xzvf lua-5.3.6.tar.gz \
+    && cd lua-5.3.6 && make linux CC=mpicc && make local \
+    && cp -r install/* /home/tools && cd ..
+
+RUN wget --progress=bar:force:noscroll https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz \
+    && tar -xf eigen-3.4.0.tar.gz \
+    && cd eigen-3.4.0 && mkdir build && cd build && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
+    && make -j$(nproc) install 
+
+RUN git clone --depth 1 --single-branch --branch 4.9.3 https://github.com/OSGeo/PROJ.git \
+    && cd PROJ \
+    && mkdir build && cd build \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools \
+    && make -j$(nproc) && make install
+
+### Put all dependencies, which point to a specific version, before this comment
+### Put all dependencies, which use the latest version, after this comment to reduce build time
+
+RUN git clone --recursive https://github.com/TUM-I5/ASAGI.git \
+    && cd ASAGI \
+    && mkdir build && cd build \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DNONUMA=on \
+    && make -j$(nproc) && make install
+
+RUN git clone https://github.com/SeisSol/easi \
+    && cd easi \
+    && mkdir build && cd build \
+    && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=OFF .. \
+    && make -j$(nproc) && make install
+
+RUN pip install numpy && pip install git+https://github.com/SeisSol/PSpaMM.git@davschneller/compile-fixes && docker-clean
+
+#RUN git clone --depth 1 --single-branch --branch main https://github.com/libxsmm/libxsmm.git \
+#    && cd libxsmm \
+#    && make PLATFORM=1 JIT=1 AR=aarch64-linux-gnu-ar \
+#       FC=aarch64-linux-gnu-gfortran \
+#       CXX=aarch64-linux-gnu-g++ \
+#       CC=aarch64-linux-gnu-gcc \
+#       -j$(nproc) generator \
+#    && cp bin/libxsmm_gemm_generator /home/tools/bin
+
+RUN git clone --recursive --depth 1 --single-branch --branch v1.1.3 https://github.com/SeisSol/SeisSol.git \
+    && cd SeisSol \
+    && mkdir build_hsw && cd build_hsw \
+    && export PATH=$PATH:/home/tools/bin \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=PSpaMM -DHOST_ARCH=noarch -DASAGI=on -DNETCDF=on -DORDER=4 \
+    && make -j$(nproc) \
+    && cmake .. -DEQUATIONS=viscoelastic2 -DNUMBER_OF_MECHANISMS=3 \
+    && make -j$(nproc) \
+    && cp SeisSol_* /home/tools/bin
+
+RUN cd SeisSol/preprocessing/science/rconv \
+    && mkdir build && cd build \
+    && echo "find_package(HDF5 REQUIRED COMPONENTS C HL)" >> ../CMakeLists.txt \
+    && echo "target_link_libraries(SeisSol-rconv PUBLIC \${HDF5_C_HL_LIBRARIES} \${HDF5_C_LIBRARIES})" >> ../CMakeLists.txt \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_PREFIX_PATH=/home/tools \
+    && make -j$(nproc) && cp rconv /home/tools/bin/
+
+RUN git clone --recursive --depth 1 --single-branch --branch v2.2.7 https://github.com/SCOREC/core.git \
+    && cd core \
+    && mkdir build && cd build \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release -DSCOREC_CXX_FLAGS="-Wno-error=array-bounds" \
+    && make -j$(nproc) && make install
+
+RUN git clone --recursive https://github.com/SeisSol/PUMGen.git \
+    && cd PUMGen \
+    && mkdir build && cd build \
+    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
+    && make -j$(nproc) && make install
+
+FROM ghcr.io/seisscoped/container-base:ubuntu22.04_jupyterlab
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    gmsh \
+    libgomp1 \
+    libnuma1 \
+    libocct-data-exchange-7.5 \
+    libocct-foundation-7.5 \
+    libocct-modeling-algorithms-7.5 \
+    libocct-modeling-data-7.5 \
+    libopenblas-base \
+    libtbb2 \
+    libxrender1 \
+    libyaml-cpp-dev \
+    libmpich-dev \
+    mpich \
+    tini \
+    xvfb \
+    zlib1g \
+    && docker-clean 
+
+WORKDIR /home
+COPY --from=0 /home/tools tools
+### need to specify --user for gmsh installation, otherwise the tpv13 notebook can't execute !gmsh
+RUN conda install \
+    panel \
+    ipyvtklink \
+    vtk \
+    pyvista \
+    ipywidgets \
+    scipy \
+    pyproj \
+    matplotlib \
+    gmsh \
+    python-gmsh \
+    && docker-clean
+ENV PATH=/home/tools/bin:$PATH
+ENV OMP_PLACES="cores"
+ENV OMP_PROC_BIND="spread"
+ENV PYTHONPATH="${PYTHONPATH}:/home/tools/lib"
+COPY entrypoint.sh /entrypoint.sh
+RUN cd /home/tools/bin/ \
+    && mv SeisSol_Release_dnoarch_4_elastic SeisSol_Release_dhsw_4_elastic \
+    && mv SeisSol_Release_dnoarch_4_viscoelastic2 SeisSol_Release_dhsw_4_viscoelastic2
+
+WORKDIR /home/training
+COPY tpv13/ tpv13/
+COPY sulawesi/ sulawesi/
+COPY northridge/ northridge/
+COPY kaikoura/ kaikoura/
+RUN chmod -R 777 /home/training
+
+VOLUME ["/shared"]
+WORKDIR /shared
+ENTRYPOINT ["tini", "-s", "-g", "/entrypoint.sh", "--"]
