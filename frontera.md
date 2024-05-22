@@ -8,22 +8,22 @@ Then get an interactive session on a compute node. For example for a 30 min sess
 idev -m 30 -N 1 --tasks-per-node 2 -p development
 ```
 
-Then execute: 
+You can then pull and use the automatically generated container from the ci workflow:
 
 ```
 module load tacc-apptainer
-apptainer pull -F docker://seissol/training:hps-2024-frontera
+apptainer pull -F docker://seissol/training:latest
+ln -sf $(realpath latest.sif) ~/my-training.sif
+apptainer run ~/my-training.sif
+```
+
+Alternatively, you can build and use the container with:
+
+```
+module load tacc-apptainer
 apptainer build -f my-training.sif singularity.def
-apptainer run my-training.sif
-```
-
-You can also use the automatically generated container after pulling the docker container 
-
-```
-module load tacc-apptainer
-apptainer pull -F docker://seissol/training:hps-2024-frontera
-apptainer run training_latest.sif
-ln -s /absolute/path/to/training_latest.sif ~/my-training.sif
+ln -sf $(realpath my-training.sif) ~/my-training.sif
+apptainer run ~/my-training.sif
 ```
 
 You can abort the jupyter lab with Ctrl-C, confirm with `y`.
@@ -68,40 +68,21 @@ Sulawesi RS             | 6 min
 TPV13                   | 12 s
 
 ## Interacting with Frontera from local machine
+
 We present a workflow for running a Jupyter Lab remotely on Frontera, while interacting with it on your local machine.
 
 You can take the following steps:
 
-Step 1: change `SHARED_PATH="/your/path/to/container/"` in line 75 of `job.jupyter` to the path where your sigularity container is built.
+Step 1: pull the docker and create the symbolic link to ~/my-training.sif as described above
 
-Step 2: Run
-```
-sbatch -A <your_project> job.jupyter
-```
+Step 2: submit a VNC job on https://tap.tacc.utexas.edu/jobs/ (e.g. 1 node, 1 task)
 
-Step 3: Check the job status with
-```
-squeue -u $USER
-```
+Step 3: Wait till job status: running and click on Connect.
 
-Step 4: Once the status changes from `PD` to `R`, you will find the job output in a generated file `jupyter.out`.
+Step 4: open a terminal on the remote desktop, and `source setup_modules_Frontera_vnc.sh`
 
-Step 5: Check the last few lines with
-```
-tail -f jupyter.out
-```
-wait a few seconds until you get in `jupyter.out` something like:
-```
-TACC: got login node jupyter port 60320
-TACC: created reverse ports on Frontera logins
-TACC: Your jupyter notebook server is now running at https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
-```
-(and then Ctrl+C to stop monitoring the contents of `jupyter.out`)
+Step 5: Run `swp -p 1 jupyter notebook` as suggested by the script. The jupyterlab should open.
 
-Step 6: Paste the link to your local browser, you will have access to the Frontera environment on your local machine.
-```
-https://frontera.tacc.utexas.edu:60320/?token=2e0fade1f8b1ce00b303a7e97dd962c5cd10c17f03a245e8c761ca7e1d5e1597
-```
 
 ## Visualization
 

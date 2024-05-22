@@ -9,7 +9,7 @@ The Docker container contains an interactive learning environment (Jupyter) whic
 Please install [Docker](https://docs.docker.com/engine/install/), launch the Docker Desktop and then run
 
 (i) For Frontera and all Intel/AMD machines: 
- -  use label: hps-2024-frontera
+ -  use label: latest
 
 (ii) Macs with M1/M2/M3 ARM  CPUs: 
   - use label: hps-2024-remote-arm
