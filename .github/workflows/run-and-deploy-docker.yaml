@@ -30,12 +30,23 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: seissol/training
-    - name: Build and push Docker image
+    - name: Build and push Docker image (x86-64)
       uses: docker/build-push-action@v4
       with:
         context: .
         file: Dockerfile_jupyterlab
-        platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        labels: ${{ steps.meta.outputs.labels }}
+    - name: Build and push Docker image (ARM)
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: Dockerfile_jupyterlab
+        platforms: linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         cache-from: type=gha
