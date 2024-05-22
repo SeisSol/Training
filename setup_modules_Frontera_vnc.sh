@@ -32,14 +32,16 @@ SHARED_PATH="/your/path/to/container/"
 SIF_NAME="$HOME/my-training.sif"
 
 if [ ! -f $SIF_NAME ]; then
-    if [ ! -f $SHARED_PATH/$SIF_NAME ]; then
+    if [ ! -f $SHARED_PATH/training_latest.sif ]; then
         # load the image if no image exists in the shared directory
         echo "MNMN: pull the appatainer image"
-        apptainer pull -F docker://seissol/training:hps-2024-frontera
+        apptainer pull -F docker://seissol/training:latest
+        echo "MNMN: create symlink to the shared directory"
+        ln -sf $SHARED_PATH/training_latest.sif $SIF_NAME
     else
         # create symlink to the shared directory
         echo "MNMN: create symlink to the shared directory"
-        ln -s $SHARED_PATH/$SIF_NAME $SIF_NAME
+        ln -sf $SHARED_PATH/training_latest.sif $SIF_NAME
     fi
 fi
 
