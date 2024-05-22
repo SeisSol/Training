@@ -8,22 +8,21 @@ Then get an interactive session on a compute node. For example for a 30 min sess
 idev -m 30 -N 1 --tasks-per-node 2 -p development
 ```
 
-Then execute: 
-
-```
-module load tacc-apptainer
-apptainer pull -F docker://seissol/training:latest
-apptainer build -f my-training.sif singularity.def
-ln -sf $(realpath my-training.sif) ~/my-training.sif
-apptainer run ~/my-training.sif
-```
-
-You can also use the automatically generated container after pulling the docker container 
+You can then pull and use the automatically generated container from the ci workflow:
 
 ```
 module load tacc-apptainer
 apptainer pull -F docker://seissol/training:latest
 ln -sf $(realpath latest.sif) ~/my-training.sif
+apptainer run ~/my-training.sif
+```
+
+Alternatively, you can build and use the container with:
+
+```
+module load tacc-apptainer
+apptainer build -f my-training.sif singularity.def
+ln -sf $(realpath my-training.sif) ~/my-training.sif
 apptainer run ~/my-training.sif
 ```
 
