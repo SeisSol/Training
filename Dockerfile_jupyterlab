@@ -127,7 +127,7 @@ RUN git clone --recursive --depth 1 --single-branch --branch v2.2.7 https://gith
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release -DSCOREC_CXX_FLAGS="-Wno-error=array-bounds" \
     && make -j$(nproc) && make install
 
-RUN git clone --recursive https://github.com/SeisSol/PUMGen.git \
+RUN git clone --recursive --branch v1.0.1 https://github.com/SeisSol/PUMGen.git \
     && cd PUMGen \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \
