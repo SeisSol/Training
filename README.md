@@ -7,15 +7,21 @@ The Docker container contains an interactive learning environment (Jupyter) whic
 ## Installation
 
 Please install [Docker](https://docs.docker.com/engine/install/), launch the Docker Desktop and then run
+
+(i) For Frontera and all Intel/AMD machines: 
+ -  use label: hps-2024-frontera
+
+(ii) Macs with M1/M2/M3 ARM  CPUs: 
+  - use label: hps-2024-remote-arm
 ```bash
-docker pull seissol/training
+docker pull seissol/training:{label}
 ```
 
 ## Training
 
 After installation, run
 ```bash
-docker run -p 53155:53155 seissol/training
+docker run -p 53155:53155 seissol/training:{label}
 ```
 or run the [start.sh](start.sh) script.
 
