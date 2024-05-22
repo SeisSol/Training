@@ -29,7 +29,7 @@ module load tacc-apptainer
 
 #
 SHARED_PATH="/your/path/to/container/"
-SIF_NAME="training_latest.sif"
+SIF_NAME="$HOME/my-training.sif"
 
 if [ ! -f $SIF_NAME ]; then
     if [ ! -f $SHARED_PATH/$SIF_NAME ]; then
