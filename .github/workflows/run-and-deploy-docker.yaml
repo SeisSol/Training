@@ -30,17 +30,27 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: seissol/training
+    - name: Prepare x86-64 label
+      uses: docker/metadata-action@v4
+      with:
+        flavor: |
+          suffix=x86_64
     - name: Build and push Docker image (x86-64)
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: Dockerfile_jupyterlab
+        file: Dockerfile
         platforms: linux/amd64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
         labels: ${{ steps.meta.outputs.labels }}
+    - name: Prepare ARM label
+      uses: docker/metadata-action@v4
+      with:
+        flavor: |
+          suffix=arm
     - name: Build and push Docker image (ARM)
       uses: docker/build-push-action@v4
       with:
@@ -52,3 +62,4 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         labels: ${{ steps.meta.outputs.labels }}
+
