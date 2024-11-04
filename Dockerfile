@@ -86,20 +86,15 @@ RUN git clone --recursive https://github.com/TUM-I5/ASAGI.git \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DSHARED_LIB=off -DSTATIC_LIB=on -DNONUMA=on \
     && make -j$(nproc) && make install
 
-RUN git clone https://github.com/uphoffc/ImpalaJIT.git \
-    && cd ImpalaJIT \
-    && mkdir build && cd build \
-    && cmake .. && make -j $(nproc) install 
-
 RUN git clone https://github.com/SeisSol/easi \
     && cd easi \
     && mkdir build && cd build \
-    && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=ON .. \
+    && CC=mpicc CXX=mpicxx cmake .. -DEASICUBE=OFF -DLUA=ON -DCMAKE_PREFIX_PATH=/home/tools -DCMAKE_INSTALL_PREFIX=/home/tools -DASAGI=ON -DIMPALAJIT=OFF .. \
     && make -j$(nproc) && make install
 
 RUN pip install numpy && docker-clean
 
-RUN git clone --recursive --depth 1 --single-branch --branch v1.1.3 https://github.com/SeisSol/SeisSol.git \
+RUN git clone --recursive --depth 1 --single-branch --branch v1.2.0 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \

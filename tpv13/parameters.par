@@ -4,6 +4,8 @@ MaterialFileName = 'tpv12_13_material.yaml'
 !enable off-fault plasticity (ignored in Plasticity=0)
 Plasticity = 1
 Tv = 0.03
+numflux = 'rusanov' ! The numerical flux. Values: 'godunov', 'rusanov'
+numfluxnearfault = 'rusanov' ! The numerical flux for faces of cells adjacent to the fault (on cells which have at least one DR face), excluding the DR faces themselves. Values: 'godunov', 'rusanov'
 /
 
 &IniCondition
