@@ -94,7 +94,6 @@ RUN git clone https://github.com/SeisSol/easi \
 
 RUN pip install numpy && docker-clean
 
-#RUN git clone --recursive --depth 1 --single-branch --branch v1.2.0 https://github.com/SeisSol/SeisSol.git \
 RUN git clone --recursive --depth 1 --single-branch --branch master https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \

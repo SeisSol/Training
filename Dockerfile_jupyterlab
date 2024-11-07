@@ -104,7 +104,7 @@ RUN pip install numpy && pip install git+https://github.com/SeisSol/PSpaMM.git &
 #       -j$(nproc) generator \
 #    && cp bin/libxsmm_gemm_generator /home/tools/bin
 
-RUN git clone --recursive --depth 1 --single-branch --branch v1.2.0 https://github.com/SeisSol/SeisSol.git \
+RUN git clone --recursive --depth 1 --single-branch --branch master https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
