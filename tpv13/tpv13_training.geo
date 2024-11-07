@@ -10,7 +10,7 @@ SetFactory("OpenCASCADE");
 
 // Length of the fault
 l_f = 30e3;
-// Depth of the fault
+// Width of the fault (along-dip)
 w_f = 15e3;
 dip_rad = dip*Pi/180.;
 
@@ -18,7 +18,7 @@ dip_rad = dip*Pi/180.;
 // Hypocenter, z_n is here the depth along-dip
 x_n = 0e3;
 z_n = -12e3;
-// size of the nucleaton patch
+// Dimensions of the nucleation patch
 l_n = 3e3;
 w_n = 3e3;
 
@@ -32,7 +32,7 @@ Z0 = -42e3;
 // Create the domain as a box
 domain = newv; Box(domain) = {X0, Y0, Z0, X1-X0, Y1-Y0, -Z0};
 
-// Create the fault as a vertically dipping rectangle, centered in x at the hypocenter
+// Create the fault as a in the x-y plane, centered in x at the hypocenter
 fault = news; Rectangle(fault) = {-l_f/2, -w_f, 0, l_f, w_f};
 
 // Create the nucleation patch as a smaller rectangle
@@ -44,7 +44,7 @@ Rotate{ {1, 0, 0}, {0, 0, 0}, dip_rad } { Surface{fault, nucl}; }
 // Intersect the domain box with the fault rectangle at the free surface
 v() = BooleanFragments{ Volume{domain}; Delete; }{ Surface{fault, nucl}; Delete; };
 
-// Update all coordinates that define important surfaces within the mesh
+// Extract surfaces within the mesh for defining boundary conditions
 eps = 1e-3;
 fault_final[] = Surface In BoundingBox{-l_f/2-eps, -w_f-eps, -w_f-eps, l_f/2+eps, w_f+eps, w_f+eps};
 top[] = Surface In BoundingBox{X0-eps, Y0-eps, -eps, X1+eps, Y1+eps, eps};
@@ -66,4 +66,3 @@ Physical Surface(3) = {fault_final[]};
 Physical Surface(5) = {other[]};
 
 Physical Volume(1) = {domain};
-Mesh.MshFileVersion = 2.2;
