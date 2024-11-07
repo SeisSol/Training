@@ -94,7 +94,7 @@ RUN git clone https://github.com/SeisSol/easi \
 
 RUN pip install numpy && docker-clean
 
-RUN git clone --recursive --depth 1 --single-branch --branch master https://github.com/SeisSol/SeisSol.git \
+RUN git clone --recursive --depth 1 --single-branch --branch v1.3.0 https://github.com/SeisSol/SeisSol.git \
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
@@ -111,13 +111,7 @@ RUN cd SeisSol/preprocessing/science/rconv \
     && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_PREFIX_PATH=/home/tools \
     && make -j$(nproc) && cp rconv /home/tools/bin/
 
-RUN git clone --recursive --depth 1 --single-branch --branch v2.2.7 https://github.com/SCOREC/core.git \
-    && cd core \
-    && mkdir build && cd build \
-    && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release -DSCOREC_CXX_FLAGS="-Wno-error=array-bounds" \
-    && make -j$(nproc) && make install
-
-RUN git clone --recursive --branch v1.0.1 https://github.com/SeisSol/PUMGen.git \
+RUN git clone --recursive --branch v1.1.0 https://github.com/SeisSol/PUMGen.git \
     && cd PUMGen \
     && mkdir build && cd build \
     && cmake .. -DCMAKE_INSTALL_PREFIX=/home/tools -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=Release \

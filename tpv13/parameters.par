@@ -70,8 +70,9 @@ refinement = 1
 
 ! Free surface output
 SurfaceOutput = 1
-SurfaceOutputRefinement = 1
+SurfaceOutputRefinement = 0
 SurfaceOutputInterval = 2.0
+surfacevtkorder = 2
 
 pickdt = 0.005                       ! Pickpoint Sampling
 RFileName = 'tpv12_13_receivers.dat'      ! Record Points in extra file
