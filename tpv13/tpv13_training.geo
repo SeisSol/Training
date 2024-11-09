@@ -32,7 +32,7 @@ Z0 = -42e3;
 // Create the domain as a box
 domain = newv; Box(domain) = {X0, Y0, Z0, X1-X0, Y1-Y0, -Z0};
 
-// Create the fault as a in the x-y plane, centered in x at the hypocenter
+// Create the fault as a rectangle in the x-y plane, centered in x at the hypocenter
 fault = news; Rectangle(fault) = {-l_f/2, -w_f, 0, l_f, w_f};
 
 // Create the nucleation patch as a smaller rectangle
