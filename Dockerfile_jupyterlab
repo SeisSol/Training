@@ -163,6 +163,7 @@ RUN conda install \
     matplotlib \
     gmsh \
     python-gmsh \
+    sympy \
     && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
