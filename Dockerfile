@@ -153,6 +153,7 @@ RUN conda install \
     gmsh \
     python-gmsh \
     sympy \
+    pandas \
     && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"
