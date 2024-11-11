@@ -11,10 +11,10 @@
         depth = math.abs(x["z"])
         s_max_minus_Pf = 9.8 * (2700.0 - 1000.0);
         if (depth<=11951.15) then
-          sigma_3_to_sigma_1 = 0.3496
+          s3_to_s1 = 0.3496
           -- math.floor(a+0.5) is round
-          s_xx =  -0.01 * math.floor(100.0 * (0.5 * (1.0 + sigma_3_to_sigma_1) * s_max_minus_Pf) + 0.5) * depth
-          s_yy =  -0.01 * math.floor(100.0 *               (sigma_3_to_sigma_1 * s_max_minus_Pf) + 0.5) * depth
+          s_xx =  -0.01 * math.floor(100.0 * (0.5 * (1.0 + s3_to_s1) * s_max_minus_Pf) + 0.5) * depth
+          s_yy =  -0.01 * math.floor(100.0 *               (s3_to_s1 * s_max_minus_Pf) + 0.5) * depth
           s_zz = -s_max_minus_Pf * depth
         else
           s_xx = -s_max_minus_Pf * depth

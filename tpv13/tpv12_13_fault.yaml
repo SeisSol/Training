@@ -13,10 +13,11 @@
         nucleation_size = 3000.0
         along_width_nucleation_center = 12000.0
         sinDip = math.sin(60 * math.pi / 180)
-        
         x_in_nucleation = (math.abs(x["x"]) <= 0.5 * nucleation_size)
-        z_in_nucleation = (math.abs(x["z"] + along_width_nucleation_center * sinDip) <= 0.5 * nucleation_size * sinDip)
-        
+        z_in_nucleation = (
+            math.abs(x["z"] + along_width_nucleation_center * sinDip) <= 
+            0.5 * nucleation_size * sinDip
+        )     
         if x_in_nucleation and z_in_nucleation then
             mu_s = 0.54
         end
