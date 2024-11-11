@@ -7,6 +7,8 @@ Tv=0.05
 !Attenuation parameters (ignored if not compiled with attenuation)
 FreqCentral=0.3
 FreqRatio=100
+numflux = 'rusanov' ! The numerical flux. Values: 'godunov', 'rusanov'
+numfluxnearfault = 'rusanov' ! The numerical flux for faces of cells adjacent to the fault (on cells which have at least one DR face), excluding the DR faces themselves. Values: 'godunov', 'rusanov'
 /
 
 &IniCondition
