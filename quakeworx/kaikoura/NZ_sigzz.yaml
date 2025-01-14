@@ -1,0 +1,8 @@
+!LuaMap
+  returns: [sig_zz]
+  function: |
+     function f (x)
+      return {
+        sig_zz = (1./1.357)*(2670.0-1880.0)*9.8*math.min(-1500.0,x["z"])
+      }
+      end

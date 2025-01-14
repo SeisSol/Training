@@ -1,0 +1,29 @@
+!Switch
+[s_xy, s_yz, s_xz]: !ConstantMap
+  map:
+    s_xy: 0
+    s_yz: 0
+    s_xz: 0
+[s_xx, s_yy, s_zz]: !LuaMap
+  returns: [s_xx, s_yy, s_zz]
+  function: |
+      function f (x)
+        depth = math.abs(x["z"])
+        s_max_minus_Pf = 9.8 * (2700.0 - 1000.0);
+        if (depth<=11951.15) then
+          s3_to_s1 = 0.3496
+          -- math.floor(a+0.5) is round
+          s_xx =  -0.01 * math.floor(100.0 * (0.5 * (1.0 + s3_to_s1) * s_max_minus_Pf) + 0.5) * depth
+          s_yy =  -0.01 * math.floor(100.0 *               (s3_to_s1 * s_max_minus_Pf) + 0.5) * depth
+          s_zz = -s_max_minus_Pf * depth
+        else
+          s_xx = -s_max_minus_Pf * depth
+          s_yy = s_xx
+          s_zz = s_xx
+        end
+        return {
+          s_xx = s_xx,
+          s_yy = s_yy,
+          s_zz = s_zz,
+        }
+      end

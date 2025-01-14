@@ -1,0 +1,51 @@
+!Switch
+[rho, mu, lambda, Qp, Qs]: !EvalModel
+    parameters: [rho, mu, lambda]
+    model: !Switch
+        [rho, mu, lambda]:  !Include NZ_rhomulambda_large.yaml
+    components: !LuaMap
+        returns: [rho, mu, lambda, Qp, Qs]
+        function: |
+            function f(x)
+                rho = x["rho"]
+                mu = x["mu"]
+                lambda = x["lambda"]
+                Qs = 0.05 * math.sqrt(mu/rho)
+                Qp = 2.0 * Qs
+                return {
+                    rho = rho,
+                    mu = mu,
+                    lambda = lambda,
+                    Qp = Qp,
+                    Qs = Qs
+                }
+            end
+[bulkFriction]: !ConstantMap
+  map:
+    bulkFriction: 0.6
+[plastCo]: !IdentityMap
+  components:
+    - !SphericalDomainFilter
+      radius: 4.0e3
+      centre:
+        x:  -56533.6328
+        y: -56738.6094
+        z: -14389.161621
+      components: !ConstantMap
+        map:
+          plastCo: 1.0e20
+    - !LayeredModel
+      map: !AffineMap
+        matrix:
+          z0: [0.0, 0.0, 1.0]
+        translation:
+          z0: 0
+      interpolation: linear
+      parameters: [plastCo]
+      nodes:
+        10e10:    [4e6]
+        -500.0:  [4e6]
+        -3000.0:  [18e6]
+        -6000.0:  [5e7]
+        -10e10:   [5e7]
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include NZ_initial_stressLSW.yaml

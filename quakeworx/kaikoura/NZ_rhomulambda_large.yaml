@@ -1,0 +1,28 @@
+!Switch
+[rho, mu, lambda]:  !IdentityMap
+  components: 
+    - !AffineMap
+          matrix:
+            ua: [0.76484668, -0.64421235, 0.0]
+            ub: [-0.64421235, -0.76484668, 0.0]
+            uc: [0.0, 0.0, 1.0]
+          translation:
+            ua: 68007.74870229233
+            ub: -48195.13386009494
+            uc: 0.0
+          components: !Any
+            - !ASAGI
+                file: NZ_asagi_7_4.dat
+                parameters: [rho, mu, lambda]
+                var: data
+                interpolation: linear
+            - !ASAGI
+                file: NZ_asagi_40_4.dat
+                parameters: [rho, mu, lambda]
+                var: data
+                interpolation: linear
+            - !ConstantMap
+                map:
+                 rho: 3330.
+                 mu: 65942325000.
+                 lambda: 81235350000.

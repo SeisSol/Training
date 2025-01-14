@@ -1,0 +1,33 @@
+!Switch
+[s_xx, s_yy, s_zz, s_xy, s_yz, s_xz]: !Include tpv12_13_initial_stress.yaml
+[mu_d, d_c, cohesion]: !ConstantMap
+      map:
+        mu_d:        0.10
+        d_c:         0.50
+        cohesion: -200000
+[mu_s]: !LuaMap
+  returns: [mu_s]
+  function: |
+    function f(x)
+        mu_s = 0.7
+        nucleation_size = 3000.0
+        along_width_nucleation_center = 12000.0
+        sinDip = math.sin(60 * math.pi / 180)
+        x_in_nucleation = (math.abs(x["x"]) <= 0.5 * nucleation_size)
+        z_in_nucleation = (
+            math.abs(x["z"] + along_width_nucleation_center * sinDip) <= 
+            0.5 * nucleation_size * sinDip
+        )     
+        if x_in_nucleation and z_in_nucleation then
+            mu_s = 0.54
+        end
+        
+        return { mu_s = mu_s }
+    end
+        
+[Tnuc_n, Tnuc_s, Tnuc_d, forced_rupture_time]: !ConstantMap
+    map:
+        Tnuc_n: 0
+        Tnuc_s: 0
+        Tnuc_d: 0
+        forced_rupture_time: 1e10
