@@ -12,12 +12,12 @@
             uc: 0.0
           components: !Any
             - !ASAGI
-                file: NZ_asagi_7_4.dat
+                file: NZ_asagi_7_4.nc
                 parameters: [rho, mu, lambda]
                 var: data
                 interpolation: linear
             - !ASAGI
-                file: NZ_asagi_40_4.dat
+                file: NZ_asagi_40_4.nc
                 parameters: [rho, mu, lambda]
                 var: data
                 interpolation: linear
