@@ -1,0 +1,46 @@
+!Switch
+[rho,mu0,lambda0,xi0,mu,lambda,gamma,epsxx_alpha,epsyy_alpha,epszz_alpha,epsxy_alpha,epsyz_alpha,epszx_alpha]: !ConstantMap
+  map:
+    rho:    2760
+    mu0:     32038120320
+    lambda0: 32043759360
+    xi0:     0.75
+    mu:     32038120320
+    lambda: 32043759360
+    gamma:  0.00e10
+    epsxx_alpha: -4.6921e-5
+    epsyy_alpha: -5.9238e-4
+    epszz_alpha: -4.6921e-5
+    epsxy_alpha: 4.5787e-4
+    epsyz_alpha: 0.0
+    epszx_alpha: 0.0
+[gammaR,Cd]: !FunctionMap
+  map:
+    gammaR: |
+      depthVar = 1000.0;
+      dGam = 0.0;
+      uGam = 37200000000.0;
+      if (z >= -depthVar) {
+         return uGam - dGam*(depthVar + z)/depthVar;
+      }
+      return uGam;
+    Cd: |
+      rx = sqrt(x*x);
+      rz = sqrt((z+7500)*(z+7500));
+      rx1 = sqrt((x+7500)*(x+7500));
+      rx2 = sqrt((x-7500)*(x-7500));
+      r = max(rx, rz);
+      depthCd = 1000.0;
+      CdUni = 0.000005;
+      CdDropTo = 0.0000005;
+      if (z > -depthCd) {
+         return CdUni - (CdUni - CdDropTo)*(depthCd+z)/depthCd;
+      }
+      if (max(rx1,rz) <=1800) {
+         return CdUni;
+      }
+      if (max(rx2,rz) <=1800) {
+         return CdUni;
+      }
+      return CdUni;
+
