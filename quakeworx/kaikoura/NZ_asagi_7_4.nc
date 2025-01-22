@@ -1,0 +1,1 @@
+../../kaikoura/asagi/NZ_asagi_7_4.nc

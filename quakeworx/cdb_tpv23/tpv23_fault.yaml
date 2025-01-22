@@ -1,0 +1,55 @@
+!Switch
+[s_xz,s_yz]: !ConstantMap
+  map:
+    s_xz: 0
+    s_yz: 0
+[s_xy]: !FunctionMap
+  map:
+    s_xy: |
+       tau_0 = 0.0;
+       if (z >= -15000.0) {
+         return tau_0;
+       }
+       if (z < -15000.0) {
+        return tau_0 - 0.0*(-z-15000);
+       }
+       return 0.0;
+[s_zz]: !FunctionMap
+  map:
+    s_zz: |
+      return -50000000.0;
+[s_xx]: !FunctionMap
+  map:
+    s_xx: |
+      return -50000000.0;
+[s_yy]: !FunctionMap
+  map:
+    s_yy: |
+      return -0.0;
+[mu_s, mu_d, d_c]: !ConstantMap
+  map:
+     mu_s:        0.548
+     mu_d:        0.373
+     d_c:         0.3
+[cohesion,forced_rupture_time]: !FunctionMap # nucleation as used  SCEC tpv24
+  map:
+    cohesion: |
+      cohesion = -0.0;
+      zIncreasingCohesion = 5000.0;
+      if (z >= -zIncreasingCohesion) {
+        return cohesion - 1.0*1400.0 * ( z + zIncreasingCohesion);
+      }
+      return cohesion;
+    forced_rupture_time: |
+      r = sqrt(pow(x+15000.0, 2.0) + pow(z+10000.0, 2.0));
+      r_crit = 3000.0;
+      Vs = 3464.0;
+      if (r <= r_crit) {
+        return r/(0.7*Vs)+(0.081*r_crit/(0.7*Vs))*(1.0/(1.0-pow(r/r_crit, 2.0))-1.0);
+      }
+      return 1000000000.0;
+[Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
+  map:
+    Tnuc_n: 0
+    Tnuc_s: 0
+    Tnuc_d: 0
