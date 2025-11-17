@@ -1,0 +1,17 @@
+!Switch
+[rho, mu, lambda]: !Any
+  components:
+    - !GroupFilter
+      groups: [0]
+      components: !ConstantMap
+        map: 
+          rho:    1000
+          mu:     0.0
+          lambda: 2.250e9
+    - !GroupFilter
+      groups: [1]
+      components: !ConstantMap
+        map:
+          rho: 2670
+          mu: 32038120320
+          lambda: 32043759360

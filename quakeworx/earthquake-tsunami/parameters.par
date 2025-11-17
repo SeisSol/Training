@@ -1,0 +1,102 @@
+&equations
+MaterialFileName = 'material_WL.yaml'
+Plasticity = 0
+!numflux = 'godunov'
+!numfluxnearfault = 'godunov'
+/
+
+&IniCondition
+/
+
+&DynamicRupture
+FL = 16                                        ! Friction law
+ModelFileName = 'fault.yaml'
+
+!characteristic time of the forced nucleation
+t_0 = 0.5
+
+!reference vector for defining strike and dip direction
+XRef = -0.1
+YRef = 0.0
+ZRef = -1.0
+refPointMethod = 1
+
+!etahack = 1.0
+!etastop = 12
+
+OutputPointType = 4                            ! Type (0: no output, 3: ascii file, 4: paraview file, 5: 3+4)
+SlipRateOutputType=1        ! 0: (smoother) slip rate output evaluated from the difference between the velocity on both side of the fault
+                            ! 1: slip rate output evaluated from the fault tractions and the failure criterion (less smooth but usually more accurate where the rupture front is well developped)
+/
+
+!see: https://seissol.readthedocs.io/en/latest/fault-output.html
+!parameterize paraview file output
+&Elementwise
+printtimeinterval_sec = 5.0                    ! Time interval at which output will be written
+OutputMask = 1 1 1 1 1 1 1 1 1 1 1             ! turn on and off fault outputs
+refinement_strategy = 2
+refinement = 1
+vtkorder = -1 ! positive values enable the high-order VTKHDF format for the elementwise fault output
+/
+
+! parameterize ascii fault file outputs
+&Pickpoint
+printtimeinterval = 100       ! Index of printed info at timesteps
+OutputMask = 1 1 1 1 1 1 1 1 1 1 1 1        ! turn on and off fault outputs
+!pickdt = 0.005 ! not yet implemented
+PPFileName = 'onfault_receivers.dat'
+/
+
+&SourceType
+/
+            
+&MeshNml
+MeshFile = 'mesh_ttpv1_small_18k.puml.h5'
+!MeshFile = 'mesh_ttpv2_225k.puml.h5'
+meshgenerator = 'PUML'                         ! Name of meshgenerator (Gambit3D-fast, Netcdf or PUML)
+pumlboundaryformat='i32'                       ! Due to bug
+/
+
+&Discretization
+CFL = 0.4                                      ! CFL number (<=1.0)
+ClusteredLTS = 2                               ! Enable local time-stepping
+/
+
+&Output
+OutputFile = 'outputs/ttpv1'
+!OutputFile = 'outputs/ttpv2' 
+WavefieldOutput = 0        ! disable/enable volumne wavefield output (right now, format=6 needs to be set as well)
+Format = 10                                     ! Format (10=no output, 6=hdf5 output)
+!             |stress     |vel
+iOutputMask = 1 1 1 1 1 1 1 1 1
+TimeInterval = 1.0                           ! Index of printed info at time
+refinement = 1
+
+! Free surface output
+SurfaceOutput = 1
+SurfaceOutputRefinement = 1
+SurfaceOutputInterval = 1.0
+
+ReceiverOutput = 0 !1
+pickdt = 0.01                       ! Pickpoint Sampling
+RFileName = ''      ! Record Points in extra file
+ReceiverOutputInterval = 10.0
+ReceiverComputeStrain = 0
+
+xdmfWriterBackend = 'hdf5' ! (optional) The backend used in fault, wavefield,
+! and free-surface output. The HDF5 backend is only supported when SeisSol is compiled with
+! HDF5 support.
+
+EnergyOutput = 1 ! Computation of energy, written in csv file
+EnergyTerminalOutput = 1 ! Write energy to standard output
+EnergyOutputInterval = 1.0
+
+wavefieldvtkorder = -1
+surfacevtkorder = -1
+
+Checkpoint = 0
+/
+
+&AbortCriteria
+EndTime = 240.0
+/
