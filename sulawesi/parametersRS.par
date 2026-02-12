@@ -50,7 +50,7 @@ refinement = 1
 
 ! parameterize ascii fault file outputs
 &Pickpoint
-printtimeinterval = 1                          ! Index of printed info at timesteps
+printtimeinterval = 30                         ! Index of printed info at timesteps
 OutputMask = 1 1 1 1 1 1 1 1 1 1 1             ! turn on and off fault outputs
 nOutpoints = 1
 PPFileName = 'faultreceiver_hypocenter.dat'
@@ -75,13 +75,14 @@ ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3
 
 &Output
 OutputFile = 'output/Sulawesi'
-Format = 10                                    ! Format (10= no output, 6=hdf5 output)
+wavefieldoutput = 1
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
 TimeInterval = 5.                              ! Index of printed info at time
 refinement = 2
 
 ! off-fault ascii receivers
+ReceiverOutput = 1
 RFileName = 'GPSfiltered_proj_200m_8e6.dat'    ! Record Points in extra file
 pickdt = 0.01                                  ! Pickpoint Sampling
 ! (Optional) Synchronization point for receivers.
