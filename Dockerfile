@@ -130,6 +130,7 @@ RUN git clone --recursive https://github.com/SeisSol/SeisSol.git \
 
 # 11. Build rconv
 RUN cd SeisSol/preprocessing/science/rconv/ \
+    && git checkout vikas/rconv-fix \
     && mkdir build && cd build \
     && echo "find_package(HDF5 REQUIRED COMPONENTS C HL)" >> ../CMakeLists.txt \
     && echo "target_link_libraries(SeisSol-rconv PUBLIC \${HDF5_C_HL_LIBRARIES} \${HDF5_C_LIBRARIES})" >> ../CMakeLists.txt \
