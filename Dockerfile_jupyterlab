@@ -185,6 +185,7 @@ RUN apt-get update \
     ca-certificates \
     gmsh \
     python3-gmsh \
+    python-is-python3 \
     libgomp1 \
     libnuma1 \
     libopenblas-dev \
