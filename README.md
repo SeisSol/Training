@@ -48,6 +48,8 @@ The following tools are currently included:
 - rconv (tool to describe point and finite source models in SeisSol's NetCDF Rupture Format, https://seissol.readthedocs.io/en/latest/standard-rupture-format.html#how-to-use-rconv)
 - SeisSol O4 (pre-compiled SeisSol with 4th order space-time accuracy for elastic and viscoelastic materials, https://seissol.readthedocs.io). We use the SeisSol `v1.0.1`. See the first lines of the SeisSol output to get the exact commit hash.
 
+The SeisSol binaries in the container use NEW_BINARY_NAMING (e.g., `seissol-cpu-elastic-p4-f64` and `seissol-cpu-viscoelastic-3-p4-f64`).
+
 
 I.e.
 ```
