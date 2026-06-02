@@ -4,6 +4,14 @@ Welcome to the SeisSol training. Please clone this repository with git (using th
 This repository contains a Dockerfile to build a Docker container.
 The Docker container contains an interactive learning environment (Jupyter) which includes meshing tools, SeisSol, and visualiation tools.
 
+
+## [Quakeworx](https://quakeworx.org)
+
+In addition to the base notebook, of the "standard" SeisSol training repository, the repository also contains notebooks specifically adapted for seamless integration with the Quakeworx science gateway for seismic simulations. These notebooks are identified by the _qwx.ipynb suffix. More details can be found at the Quakeworx Kick-off: [Advancing Earthquake Science and Cybertraining in Seismology workshop page](https://quakeworx.org/events/quakeworx-kick-off-workshop).
+
+The simplest way to access the input files for the Gateway is by running ``git clone https://github.com/SeisSol/Training.git`` from your terminal locally. Make sure to navigate into the Training folder when uploading the input files to the SeisSol App from the Gateway.
+
+
 ## Installation
 
 Please install [Docker](https://docs.docker.com/engine/install/), launch the Docker Desktop and then run
