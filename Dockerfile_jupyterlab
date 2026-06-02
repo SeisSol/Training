@@ -52,7 +52,7 @@ RUN wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.12/hdf5-1.12.3/sr
        --disable-dependency-tracking \
     && make -j$(nproc) && make install
 
-# 2. Build libxsmm (Compiled ONLY on Intel hosts, cleanly skipped on ARM)
+# 2. Build libxsmm (Compiled ONLY on amd64 hosts, cleanly skipped on ARM)
 ARG TARGETARCH
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
         git clone --depth=1 --single-branch --branch 1.17 https://github.com/libxsmm/libxsmm \
@@ -201,7 +201,6 @@ RUN apt-get update \
     zlib1g \
     && rm -rf /var/lib/apt/lists/*
 
-# Cleanly removed the 'gmsh' token from the pip mapping layer
 RUN pip3 install --no-cache-dir --break-system-packages \
     panel \
     ipyvtklink \
