@@ -68,7 +68,7 @@ ClusteredLTS = 2                     ! 1 for Global time stepping, 2,3,5,... Loc
 /
 
 &Output
-OutputFile = 'output/NZ_LSW'
+OutputFile = 'outputs/NZ_LSW'
 Format = 10                          ! Format (10= no output, 6=hdf5 output)
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
