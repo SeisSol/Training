@@ -16,20 +16,15 @@ The simplest way to access the input files for the Gateway is by running ``git c
 
 Please install [Docker](https://docs.docker.com/engine/install/), launch the Docker Desktop and then run
 
-(i) For Frontera and all Intel/AMD machines: 
- -  use label: latest
-
-(ii) Macs with M1/M2/M3 ARM  CPUs: 
-  - use label: hps-2024-remote-arm
 ```bash
-docker pull seissol/training:{label}
+docker pull seissol/training
 ```
 
 ## Training
 
-After installation, run
+After installation, we recommend assigning at least 8 GB of memory to Docker so all simulations run smoothly. Run
 ```bash
-docker run -p 53155:53155 seissol/training:{label}
+docker run --memory=8g -p 53155:53155 seissol/training
 ```
 or run the [start.sh](start.sh) script.
 
@@ -55,6 +50,8 @@ The following tools are currently included:
 - GMSH (open source 3D finite element mesh generator, client only, https://gmsh.info)
 - rconv (tool to describe point and finite source models in SeisSol's NetCDF Rupture Format, https://seissol.readthedocs.io/en/latest/standard-rupture-format.html#how-to-use-rconv)
 - SeisSol O4 (pre-compiled SeisSol with 4th order space-time accuracy for elastic and viscoelastic materials, https://seissol.readthedocs.io). We use the SeisSol `v1.0.1`. See the first lines of the SeisSol output to get the exact commit hash.
+
+The SeisSol binaries in the container use new binary naming (e.g., `seissol-cpu-elastic-p4-f64` and `seissol-cpu-viscoelastic-3-p4-f64`).
 
 
 I.e.
