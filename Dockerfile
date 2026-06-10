@@ -154,6 +154,7 @@ RUN conda install \
     python-gmsh \
     sympy \
     pandas \
+    && pip install trame trame-vtk trame-client \
     && docker-clean
 ENV PATH=/home/tools/bin:$PATH
 ENV OMP_PLACES="cores"

@@ -205,6 +205,9 @@ RUN apt-get update \
 RUN pip3 install --no-cache-dir --break-system-packages \
     panel \
     ipyvtklink \
+    trame \
+    trame-vtk \
+    trame-client \
     vtk \
     pyvista \
     ipywidgets \
