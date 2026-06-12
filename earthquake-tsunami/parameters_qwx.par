@@ -48,7 +48,7 @@ PPFileName = 'onfault_receivers.dat'
 /
             
 &MeshNml
-MeshFile = 'mesh_ttpv1_small_18k.puml.h5'
+MeshFile = 'mesh_ttpv1_105k.puml.h5'
 !MeshFile = 'mesh_ttpv2_225k.puml.h5'
 meshgenerator = 'PUML'                         ! Name of meshgenerator (Gambit3D-fast, Netcdf or PUML)
 pumlboundaryformat='i32'                       ! the boundary data type for PUML files ('auto', 'i32', 'i64', 'i32x4')
