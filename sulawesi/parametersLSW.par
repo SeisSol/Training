@@ -69,7 +69,7 @@ ClusteredLTS = 2                               ! 1 for Global time stepping, 2,3
 /
 
 &Output
-OutputFile = 'output/SulawesiLSW'
+OutputFile = 'outputs/SulawesiLSW'
 wavefieldoutput = 1
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1
