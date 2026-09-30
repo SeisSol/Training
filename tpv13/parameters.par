@@ -60,7 +60,7 @@ ClusteredLTS = 2                               ! Enable local time-stepping
 /
 
 &Output
-OutputFile = 'output/tpv13'
+OutputFile = 'outputs/tpv13'
 Format = 6                                     ! Format (10=no output, 6=hdf5 output)
 !             |stress     |vel
 iOutputMask = 0 0 0 0 0 0 1 1 1

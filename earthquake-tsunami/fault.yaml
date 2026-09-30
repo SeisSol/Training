@@ -1,0 +1,45 @@
+!Switch
+[mu_s, mu_d, d_c]: !ConstantMap
+      map:
+        mu_s:        0.575
+        mu_d:        0.450
+        d_c:         0.18
+[forced_rupture_time, cohesion, T_n, T_s, T_d]: !LuaMap
+  returns: [forced_rupture_time, cohesion, T_n, T_s, T_d]
+  function: |
+     function f (x)
+      xh = 17387.0
+      yh = 0.0
+      zh = -4658.0
+      r_crit = 4000.0
+      r = math.sqrt((x["x"]-xh)^2 + (x["y"]-yh)^2 + (x["z"]-zh)^2 )
+      Vs = 3464.0
+      if (r <= r_crit) then
+        forced_rupture_time = r/(0.7*Vs)+(0.081*r_crit/(0.7*Vs))*(1.0/(1.0-(r/r_crit)^2)-1.0)
+      else 
+        forced_rupture_time = 1000000000.0
+      end
+
+      pi = 4.0 * math.atan(1.0)
+      depth = math.abs(x["z"])
+      w = depth/math.sin(15.0*pi/180.)
+
+      if (w < 8000) then
+        cohesion = -500.0 * math.max(8000.0-w,0)
+      else 
+        cohesion = 0.0
+      end
+      
+      return {
+        forced_rupture_time = forced_rupture_time,
+        cohesion = cohesion,
+        T_n = -4240.0 * w,
+        T_s = 0.0,
+        T_d = 2120.0 * w,
+      }
+     end
+[Tnuc_n, Tnuc_s, Tnuc_d]: !ConstantMap
+    map:
+        Tnuc_n: 0
+        Tnuc_s: 0
+        Tnuc_d: 0

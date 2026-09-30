@@ -98,11 +98,11 @@ RUN git clone --recursive --depth 1 --single-branch --branch v1.3.0 https://gith
     && cd SeisSol \
     && mkdir build_hsw && cd build_hsw \
     && export PATH=$PATH:/home/tools/bin \
-    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DASAGI=on -DNETCDF=on -DORDER=4 -DDR_QUAD_RULE_OPTIONS=dunavant \
+    && CC=mpicc CXX=mpicxx cmake .. -DCMAKE_PREFIX_PATH=/home/tools -DGEMM_TOOLS_LIST=LIBXSMM -DHOST_ARCH=hsw -DNEW_BINARY_NAMING=ON -DASAGI=on -DNETCDF=on -DORDER=4 -DDR_QUAD_RULE_OPTIONS=dunavant \
     && make -j$(nproc) \
     && cmake .. -DEQUATIONS=viscoelastic2 -DNUMBER_OF_MECHANISMS=3 \
     && make -j$(nproc) \
-    && cp SeisSol_* /home/tools/bin
+    && cp seissol-* /home/tools/bin
 
 RUN cd SeisSol/preprocessing/science/rconv \
     && mkdir build && cd build \
