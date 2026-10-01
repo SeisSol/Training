@@ -31,11 +31,11 @@ case "$1" in
         exec "$@"
     ;;
     seissol)
-        set -- seissol-cpu-elastic-p4-f64 "${@:2}"
+        set -- seissol-elastic-o4-f64 "${@:2}"
         exec "$@"
     ;;
     seissol_viscoelastic)
-        set -- seissol-cpu-viscoelastic-3-p4-f64 "${@:2}"
+        set -- seissol-viscoelastic-3-o4-f64 "${@:2}"
         exec "$@"
     ;;
     *)
