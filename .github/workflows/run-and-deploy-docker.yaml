@@ -34,7 +34,7 @@ jobs:
       uses: docker/build-push-action@v7
       with:
         context: .
-        file: Dockerfile_jupyterlab
+        file: Dockerfile
         platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
