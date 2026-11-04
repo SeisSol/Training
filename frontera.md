@@ -47,9 +47,9 @@ To run the Northridge scenario, you should:
 cd seissol-training/northridge
 mpirun apptainer run ~/my-training.sif pumgen -s msh2 mesh_northridge.msh
 apptainer run ~/my-training.sif rconv -i northridge_resampled.srf -o northridge_resampled.nrf -x visualization.xdmf -m "+proj=tmerc +datum=WGS84 +k=0.9996 +lon_0=-118.5150 +lat_0=34.3440 +axis=enu"
-OMP_NUM_THREADS=26 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
+OMP_NUM_THREADS=26 SEISSOL_CONFIGURATION=elastic-o4-f64 mpirun -n 2 apptainer run ~/my-training.sif seissol parameters.par
 ```
-You can change `seissol` to `seissol-viscoelastic-3-o4-f64` if you want to account for attenuation (https://seissol.readthedocs.io/en/latest/attenuation.html) instead of assuming a fully elastic rheology.
+You can change `SEISSOL_CONFIGURATION` to `viscoelastic-m3-o4-f64` if you want to account for attenuation (https://seissol.readthedocs.io/en/latest/attenuation.html) instead of assuming a fully elastic rheology.
 
 In Section `Interacting with Frontera from local machine`, we will also show how you may interact with Frontera from your local machine with a Jupyter Lab.
 
