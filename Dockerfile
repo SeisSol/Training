@@ -146,17 +146,15 @@ RUN git clone --recursive --depth 1 https://github.com/SeisSol/SeisSol.git \
          HOST_ARCH="hsw"; \
        fi \
     && PKG_CONFIG_ALLOW_SYSTEM_LIBS=1 CC=mpicc CXX=mpicxx cmake .. \
+       -DCMAKE_INSTALL_PREFIX=/home/tools \
        -DCMAKE_PREFIX_PATH=/home/tools \
        -DCMAKE_LIBRARY_PATH=/home/tools/lib \
        -DCMAKE_INCLUDE_PATH=/home/tools/include \
        -DGEMM_TOOLS_LIST="$GEMM_TOOLS" \
        -DHOST_ARCH="$HOST_ARCH" \
-       -DNEW_BINARY_NAMING=ON \
-       -DASAGI=on -DNETCDF=on -DORDER=4 -DDR_QUAD_RULE_OPTIONS=dunavant \
-    && make -j$(nproc) \
-    && cmake .. -DEQUATIONS=viscoelastic2 -DNUMBER_OF_MECHANISMS=3 \
-    && make -j$(nproc) \
-    && cp seissol-* /home/tools/bin
+       -DCONFIGS="o4" \
+       -DASAGI=on -DNETCDF=on -DDR_QUAD_RULE=dunavant \
+    && make -j$(nproc) install
 
 # 11. Build rconv
 RUN cd SeisSol/preprocessing/science/rconv \
